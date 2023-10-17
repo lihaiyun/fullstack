@@ -1,0 +1,2 @@
+Zip a folder without including the node_modules folder:
+7z a -tzip lab_solution.zip * -xr!node_modules
