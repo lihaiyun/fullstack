@@ -23,11 +23,11 @@ function MyForm() {
             title: 'My title',
             description: 'My description',
             price: 0,
-            option: '',
+            option: 'A',
             date: dayjs().add(1, 'day'),
             time: dayjs().minute(0),
             datetime: dayjs().add(1, 'day').minute(0),
-            tnc: false
+            tnc: true
         },
         validationSchema: yup.object({
             title: yup.string().trim()
@@ -40,6 +40,7 @@ function MyForm() {
                 .required('Description is required'),
             price: yup.number().min(0).required('Price is required'),
             option: yup.string().required('Option is required'),
+            date: yup.date().typeError('Invalid date').required('Date is required'),
             tnc: yup.boolean().oneOf([true], 'Accept Terms & Conditions is required')
         }),
         onSubmit: (data) => {
@@ -156,7 +157,14 @@ function MyForm() {
                                         name="date"
                                         value={formik.values.date}
                                         onChange={(date) => formik.setFieldValue('date', date)}
-                                        onBlur={() => formik.setFieldTouched('date', true)} />
+                                        onBlur={() => formik.setFieldTouched('date', true)}
+                                        slotProps={{
+                                            textField: {
+                                                error: formik.touched.date && Boolean(formik.errors.date),
+                                                helperText: formik.touched.date && formik.errors.date
+                                            }
+                                        }}
+                                    />
                                 </LocalizationProvider>
                             </FormControl>
                         </Grid>
