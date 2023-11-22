@@ -68,7 +68,7 @@ function Tutorials() {
                 <Box sx={{ flexGrow: 1 }} />
                 {
                     user && (
-                        <Link to="/addtutorial" style={{ textDecoration: 'none' }}>
+                        <Link to="/addtutorial">
                             <Button variant='contained'>
                                 Add
                             </Button>
