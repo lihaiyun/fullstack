@@ -13,11 +13,11 @@ router.post("/register", async (req, res) => {
     let validationSchema = yup.object({
         name: yup.string().trim().min(3).max(50).required()
             .matches(/^[a-zA-Z '-,.]+$/,
-                "Only allow letters, spaces and characters: ' - , ."),
+                "name only allow letters, spaces and characters: ' - , ."),
         email: yup.string().trim().lowercase().email().max(50).required(),
         password: yup.string().trim().min(8).max(50).required()
             .matches(/^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/,
-                "At least 1 letter and 1 number")
+                "password at least 1 letter and 1 number")
     });
     try {
         data = await validationSchema.validate(data,

@@ -23,7 +23,7 @@ function Register() {
                 .max(50, 'Name must be at most 50 characters')
                 .required('Name is required')
                 .matches(/^[a-zA-Z '-,.]+$/,
-                    "Only allow letters, spaces and characters: ' - , ."),
+                    "Name only allow letters, spaces and characters: ' - , ."),
             email: yup.string().trim()
                 .email('Enter a valid email')
                 .max(50, 'Email must be at most 50 characters')
@@ -33,7 +33,7 @@ function Register() {
                 .max(50, 'Password must be at most 50 characters')
                 .required('Password is required')
                 .matches(/^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/,
-                    "At least 1 letter and 1 number"),
+                    "Password at least 1 letter and 1 number"),
             confirmPassword: yup.string().trim()
                 .required('Confirm password is required')
                 .oneOf([yup.ref('password')], 'Passwords must match')
