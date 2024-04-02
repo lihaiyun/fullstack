@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             allowNull: false
         }
+    }, {
+        tableName: 'tutorials'
     });
     return Tutorial;
 }
