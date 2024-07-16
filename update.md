@@ -54,10 +54,9 @@ cd ..\..
 7z a -tzip ..\zip\lab_final_solution.zip * -xr!node_modules
 cd ..
 
-cd lab-final-postgresql\learning-app\server
+cd lab-postgresql\learning-app\server
 npm update
 cd ..\client
 npm update
 cd ..\..
-7z a -tzip ..\zip\lab_final_postgresql_solution.zip * -xr!node_modules
 cd ..
