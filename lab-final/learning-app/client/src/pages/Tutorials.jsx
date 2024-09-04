@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Grid, Card, CardContent, Input, IconButton, Button } from '@mui/material';
+import { Box, Typography, Grid2 as Grid, Card, CardContent, Input, IconButton, Button } from '@mui/material';
 import { AccountCircle, AccessTime, Search, Clear, Edit } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
@@ -81,7 +81,7 @@ function Tutorials() {
                 {
                     tutorialList.map((tutorial, i) => {
                         return (
-                            <Grid item xs={12} md={6} lg={4} key={tutorial.id}>
+                            <Grid size={{xs:12, md:6, lg:4}} key={tutorial.id}>
                                 <Card>
                                     {
                                         tutorial.imageFile && (

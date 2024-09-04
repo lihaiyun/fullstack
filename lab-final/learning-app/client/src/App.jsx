@@ -42,6 +42,7 @@ function App() {
                   </Typography>
                 </Link>
                 <Link to="/tutorials" ><Typography>Tutorials</Typography></Link>
+                <Link to="/form" ><Typography>Form</Typography></Link>
                 <Box sx={{ flexGrow: 1 }}></Box>
                 {user && (
                   <>
