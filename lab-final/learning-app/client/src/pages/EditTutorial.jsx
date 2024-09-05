@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
@@ -105,7 +105,7 @@ function EditTutorial() {
                 !loading && (
                     <Box component="form" onSubmit={formik.handleSubmit}>
                         <Grid container spacing={2}>
-                            <Grid size={{xs:12, md:6, lg:8}}>
+                            <Grid item xs={12} md={6} lg={8}>
                                 <TextField
                                     fullWidth margin="dense" autoComplete="off"
                                     label="Title"
@@ -128,7 +128,7 @@ function EditTutorial() {
                                     helperText={formik.touched.description && formik.errors.description}
                                 />
                             </Grid>
-                            <Grid size={{xs:12, md:6, lg:4}}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <Box sx={{ textAlign: 'center', mt: 2 }} >
                                     <Button variant="contained" component="label">
                                         Upload Image
