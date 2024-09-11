@@ -117,7 +117,7 @@ function MyForm() {
                                 helperText={formik.touched.description && formik.errors.description}
                             />
                         </Grid>
-                        <Grid size={{xs:12}} md={6}>
+                        <Grid size={{xs:12, md:6}}>
                             <TextField
                                 fullWidth margin="dense" autoComplete="off"
                                 type="number"
@@ -133,7 +133,7 @@ function MyForm() {
                                 error={formik.touched.price && Boolean(formik.errors.price)}
                                 helperText={formik.touched.price && formik.errors.price} />
                         </Grid>
-                        <Grid size={{xs:12}} md={6}>
+                        <Grid size={{xs:12, md:6}}>
                             <FormControl fullWidth margin="dense"
                                 error={formik.touched.option && Boolean(formik.errors.option)}>
                                 <InputLabel>Option</InputLabel>
@@ -151,7 +151,7 @@ function MyForm() {
                                 <FormHelperText>{formik.touched.option && formik.errors.option}</FormHelperText>
                             </FormControl>
                         </Grid>
-                        <Grid size={{xs:12}} md={6}>
+                        <Grid size={{xs:12, md:6}}>
                             <FormControl fullWidth margin="dense">
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker format="DD/MM/YYYY"
@@ -170,7 +170,7 @@ function MyForm() {
                                 </LocalizationProvider>
                             </FormControl>
                         </Grid>
-                        <Grid size={{xs:12}} md={6}>
+                        <Grid size={{xs:12, md:6}}>
                             <FormControl fullWidth margin="dense">
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <TimePicker
