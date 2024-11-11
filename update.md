@@ -16,6 +16,12 @@ cd ..\..
 7z a -tzip ..\zip\lab2c_sqlite_solution.zip * -xr!node_modules
 cd ..
 
+cd lab2-postgresql\learning-app\server
+npm update
+cd ..\..
+7z a -tzip ..\zip\lab2c_postgresql_solution.zip * -xr!node_modules
+cd ..
+
 cd lab3\learning-app\server
 npm update
 cd ..\client
@@ -55,6 +61,13 @@ cd ..\..
 cd ..
 
 cd lab-postgresql\learning-app\server
+npm update
+cd ..\client
+npm update
+cd ..\..
+cd ..
+
+cd lab-MUI6\learning-app\server
 npm update
 cd ..\client
 npm update
