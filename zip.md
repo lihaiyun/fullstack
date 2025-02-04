@@ -29,3 +29,7 @@ cd ..
 cd lab-final
 7z a -tzip ..\zip\lab_final_solution.zip * -xr!node_modules
 cd ..
+
+cd lab-MUI6
+7z a -tzip ..\zip\lab_MUI6_solution.zip * -xr!node_modules
+cd ..
