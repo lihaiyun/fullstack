@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Box, Typography, TextField, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
