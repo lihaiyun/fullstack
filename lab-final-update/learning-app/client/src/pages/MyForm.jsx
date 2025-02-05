@@ -121,9 +121,11 @@ function MyForm() {
                             <TextField
                                 fullWidth margin="dense" autoComplete="off"
                                 type="number"
-                                inputProps={{
-                                    min: 0,
-                                    step: 0.1,
+                                slotProps={{
+                                    htmlInput: {
+                                        min: 0,
+                                        step: 0.1
+                                    }
                                 }}
                                 label="Price"
                                 name="price"
