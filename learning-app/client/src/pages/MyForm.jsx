@@ -16,8 +16,6 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 function MyForm() {
-    const [imageFile, setImageFile] = useState(null);
-
     const formik = useFormik({
         initialValues: {
             title: 'My title',
@@ -27,7 +25,8 @@ function MyForm() {
             date: dayjs().add(1, 'day'),
             time: dayjs().minute(0),
             datetime: dayjs().add(1, 'day').minute(0),
-            tnc: true
+            tnc: true,
+            imageFile: ""
         },
         validationSchema: yup.object({
             title: yup.string().trim()
@@ -46,9 +45,6 @@ function MyForm() {
             tnc: yup.boolean().oneOf([true], 'Accept Terms & Conditions is required')
         }),
         onSubmit: (data) => {
-            if (imageFile) {
-                data.imageFile = imageFile;
-            }
             // create a new object for submission
             let dataToSubmit = { ...data };
             dataToSubmit.title = data.title.trim();
@@ -76,7 +72,7 @@ function MyForm() {
                 }
             })
                 .then((res) => {
-                    setImageFile(res.data.filename);
+                    formik.setFieldValue('imageFile', res.data.filename);
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -218,10 +214,10 @@ function MyForm() {
                                     onChange={onFileChange} />
                             </Button>
                             {
-                                imageFile && (
+                                formik.values.imageFile && (
                                     <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
                                         <img alt="tutorial"
-                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
+                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${formik.values.imageFile}`}>
                                         </img>
                                     </Box>
                                 )
