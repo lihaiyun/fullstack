@@ -14,15 +14,14 @@ function EditTutorial() {
 
     const [tutorial, setTutorial] = useState({
         title: "",
-        description: ""
+        description: "",
+        imageFile: ""
     });
-    const [imageFile, setImageFile] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         http.get(`/tutorial/${id}`).then((res) => {
             setTutorial(res.data);
-            setImageFile(res.data.imageFile);
             setLoading(false);
         });
     }, []);
@@ -41,9 +40,6 @@ function EditTutorial() {
                 .required('Description is required')
         }),
         onSubmit: (data) => {
-            if (imageFile) {
-                data.imageFile = imageFile;
-            }
             data.title = data.title.trim();
             data.description = data.description.trim();
             http.put(`/tutorial/${id}`, data)
@@ -88,7 +84,8 @@ function EditTutorial() {
                 }
             })
                 .then((res) => {
-                    setImageFile(res.data.filename);
+                    // Use formik.setFieldValue to update the imageFile field
+                    formik.setFieldValue('imageFile', res.data.filename);
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -136,10 +133,10 @@ function EditTutorial() {
                                             onChange={onFileChange} />
                                     </Button>
                                     {
-                                        imageFile && (
+                                        formik.values.imageFile && (
                                             <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
                                                 <img alt="tutorial"
-                                                    src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
+                                                    src={`${import.meta.env.VITE_FILE_BASE_URL}${formik.values.imageFile}`}>
                                                 </img>
                                             </Box>
                                         )

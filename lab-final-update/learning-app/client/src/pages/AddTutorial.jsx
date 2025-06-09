@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Typography, TextField, Button, Grid2 as Grid } from '@mui/material';
+import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function AddTutorial() {
     const navigate = useNavigate();
-    const [imageFile, setImageFile] = useState(null);
-
+    
     const formik = useFormik({
         initialValues: {
             title: "",
-            description: ""
+            description: "",
+            imageFile: ""
         },
         validationSchema: yup.object({
             title: yup.string().trim()
@@ -27,16 +27,13 @@ function AddTutorial() {
                 .required('Description is required')
         }),
         onSubmit: (data) => {
-            if (imageFile) {
-                data.imageFile = imageFile;
-            }
             data.title = data.title.trim();
             data.description = data.description.trim();
-            http.post("/tutorial", data)
+            http.post('/tutorial', data)
                 .then((res) => {
                     console.log(res.data);
                     navigate("/tutorials");
-                });
+                })
         }
     });
 
@@ -56,7 +53,7 @@ function AddTutorial() {
                 }
             })
                 .then((res) => {
-                    setImageFile(res.data.filename);
+                    formik.setFieldValue('imageFile', res.data.filename);
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -71,7 +68,7 @@ function AddTutorial() {
             </Typography>
             <Box component="form" onSubmit={formik.handleSubmit}>
                 <Grid container spacing={2}>
-                    <Grid size={{xs:12, md:6, lg:8}}>
+                    <Grid size={{ xs: 12, md: 6, lg: 8 }}>
                         <TextField
                             fullWidth margin="dense" autoComplete="off"
                             label="Title"
@@ -94,7 +91,7 @@ function AddTutorial() {
                             helperText={formik.touched.description && formik.errors.description}
                         />
                     </Grid>
-                    <Grid size={{xs:12, md:6, lg:4}}>
+                    <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                         <Box sx={{ textAlign: 'center', mt: 2 }} >
                             <Button variant="contained" component="label">
                                 Upload Image
@@ -102,10 +99,10 @@ function AddTutorial() {
                                     onChange={onFileChange} />
                             </Button>
                             {
-                                imageFile && (
+                                formik.values.imageFile && (
                                     <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
                                         <img alt="tutorial"
-                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
+                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${formik.values.imageFile}`}>
                                         </img>
                                     </Box>
                                 )
@@ -119,7 +116,6 @@ function AddTutorial() {
                     </Button>
                 </Box>
             </Box>
-
             <ToastContainer />
         </Box>
     );
