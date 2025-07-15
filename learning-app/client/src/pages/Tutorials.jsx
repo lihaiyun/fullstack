@@ -18,13 +18,17 @@ function Tutorials() {
 
     const getTutorials = () => {
         http.get('/tutorial').then((res) => {
-            setTutorialList(res.data);
+            if (res.data) {
+                setTutorialList(res.data);
+            }
         });
     };
 
     const searchTutorials = () => {
         http.get(`/tutorial?search=${search}`).then((res) => {
-            setTutorialList(res.data);
+            if (res.data) {
+                setTutorialList(res.data);
+            }
         });
     };
 
