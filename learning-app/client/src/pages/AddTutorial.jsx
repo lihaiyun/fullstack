@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function AddTutorial() {
     const navigate = useNavigate();
+    const [imageFile, setImageFile] = useState(null);
     
     const formik = useFormik({
         initialValues: {
@@ -27,6 +28,9 @@ function AddTutorial() {
                 .required('Description is required')
         }),
         onSubmit: (data) => {
+            if (imageFile) {
+                data.imageFile = imageFile;
+            }
             data.title = data.title.trim();
             data.description = data.description.trim();
             http.post('/tutorial', data)
@@ -53,7 +57,7 @@ function AddTutorial() {
                 }
             })
                 .then((res) => {
-                    formik.setFieldValue('imageFile', res.data.filename);
+                    setImageFile(res.data.filename);
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -99,10 +103,10 @@ function AddTutorial() {
                                     onChange={onFileChange} />
                             </Button>
                             {
-                                formik.values.imageFile && (
+                                imageFile && (
                                     <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
                                         <img alt="tutorial"
-                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${formik.values.imageFile}`}>
+                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
                                         </img>
                                     </Box>
                                 )
