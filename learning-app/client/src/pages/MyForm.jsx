@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid } from '@mui/material';
 import { FormControl, InputLabel, FormHelperText, Select, MenuItem } from '@mui/material';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { useFormik } from 'formik';

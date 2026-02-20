@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { Box, Typography, TextField, Button, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';

@@ -1,3 +1,4 @@
+```bash
 npm init -y
 npm i express
 npm i nodemon --save-dev
@@ -9,3 +10,8 @@ npm i bcrypt
 npm i jsonwebtoken
 npm i multer
 npm i nanoid@3
+
+npm audit --production
+npm update
+npm run dev
+```

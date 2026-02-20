@@ -1,3 +1,4 @@
+```bash
 npm create vite .
 npm i
 npm i @mui/material @emotion/react @emotion/styled
@@ -9,8 +10,17 @@ npm i dayjs
 npm i formik yup
 npm i react-toastify
 
-npm rm @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-date-pickers
-npm rm react-router axios dayjs formik yup react-toastify
+npm audit --production
+npm update
+npm run dev
+```
 
-npm i @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-date-pickers
-npm i react-router axios dayjs formik yup react-toastify
+# Test on 20/2/2026
+```bash
+npm audit
+```
+- 5 vulnerabilities (1 moderate, 4 high)
+```bash
+npm audit --production
+```
+- found 0 vulnerabilities
