@@ -59,8 +59,8 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", validateToken, async (req, res) => {
     let id = req.params.id;
-    // Check id not found
     let tutorial = await Tutorial.findByPk(id);
+    // Check id not found
     if (!tutorial) {
         res.sendStatus(404);
         return;
@@ -100,8 +100,8 @@ router.put("/:id", validateToken, async (req, res) => {
 
 router.delete("/:id", validateToken, async (req, res) => {
     let id = req.params.id;
-    // Check id not found
     let tutorial = await Tutorial.findByPk(id);
+    // Check id not found
     if (!tutorial) {
         res.sendStatus(404);
         return;
