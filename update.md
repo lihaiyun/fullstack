@@ -36,7 +36,7 @@ cd ..\client
 npm update
 cd ..\..\..
 
-cd lab-final\learning-app\server
+cd lab7\learning-app\server
 npm update
 cd ..\client
 npm update
@@ -48,7 +48,7 @@ cd ..\client
 npm update
 cd ..\..\..
 
-cd lab-MUI6\learning-app\server
+cd learning-app\server
 npm update
 cd ..\client
 npm update
