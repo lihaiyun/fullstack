@@ -15,12 +15,12 @@ npm update
 npm run dev
 ```
 
-# Test on 20/2/2026
+# Test on 12/3/2026
 ```bash
 npm audit
 ```
-- 5 vulnerabilities (1 moderate, 4 high)
+found 0 vulnerabilities
 ```bash
 npm audit --production
 ```
-- found 0 vulnerabilities
+found 0 vulnerabilities
