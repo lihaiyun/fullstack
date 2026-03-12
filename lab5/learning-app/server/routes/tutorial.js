@@ -83,9 +83,6 @@ router.put("/:id", validateToken, async (req, res) => {
         data = await validationSchema.validate(data,
             { abortEarly: false });
 
-        data = await validationSchema.validate(data,
-            { abortEarly: false });
-
         if (data.title !== undefined) 
             tutorial.title = data.title;
         if (data.description !== undefined) 
