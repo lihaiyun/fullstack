@@ -87,6 +87,8 @@ router.put("/:id", validateToken, async (req, res) => {
             tutorial.title = data.title;
         if (data.description !== undefined) 
             tutorial.description = data.description;
+        if (data.imageFile !== undefined)
+            tutorial.imageFile = data.imageFile;
 
         await tutorial.save();
         res.json(tutorial);
