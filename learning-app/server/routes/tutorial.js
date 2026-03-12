@@ -83,19 +83,13 @@ router.put("/:id", validateToken, async (req, res) => {
         data = await validationSchema.validate(data,
             { abortEarly: false });
 
-        let num = await Tutorial.update(data, {
-            where: { id: id }
-        });
-        if (num == 1) {
-            res.json({
-                message: "Tutorial was updated successfully."
-            });
-        }
-        else {
-            res.status(400).json({
-                message: `Cannot update tutorial with id ${id}.`
-            });
-        }
+        if (data.title !== undefined) 
+            tutorial.title = data.title;
+        if (data.description !== undefined) 
+            tutorial.description = data.description;
+
+        await tutorial.save();
+        res.json(tutorial);
     }
     catch (err) {
         res.status(400).json({ errors: err.errors });
