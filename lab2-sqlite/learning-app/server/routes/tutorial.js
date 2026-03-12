@@ -96,19 +96,8 @@ router.delete("/:id", async (req, res) => {
         return;
     }
 
-    let num = await Tutorial.destroy({
-        where: { id: id }
-    })
-    if (num == 1) {
-        res.json({
-            message: "Tutorial was deleted successfully."
-        });
-    }
-    else {
-        res.status(400).json({
-            message: `Cannot delete tutorial with id ${id}.`
-        });
-    }
+    await tutorial.destroy();
+    res.sendStatus(200);
 });
 
 module.exports = router;
