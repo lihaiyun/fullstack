@@ -11,30 +11,30 @@ This is the React client for the Learning App, built with [Vite](https://vitejs.
 - Form validation with Formik and Yup
 - Toast notifications
 
-## Getting Started
-
-### Prerequisites
+## Prerequisites
 
 - Node.js (v18 or above recommended)
 - The backend server running (see `/server` folder)
 
-### Installation
+## Setup
 
-1. Install dependencies:
+1) Install dependencies:
+```bash
+npm install
+```
 
-    ```sh
-    npm install
-    ```
+2) Make sure the backend server is running before starting the client.
 
-2. Make sure the backend server is running before starting the client.
+3) Start the development server for the React App:
+```bash
+   npm start
+```
 
-3. Start the development server for the React App:
+- Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-    ```sh
-    npm start
-    ```
+## Notes
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+- Run `npm update` to fix vulnerabilities and update dependencies to their latest versions.
 
 ## Tech Stack
 
