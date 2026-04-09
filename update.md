@@ -1,3 +1,4 @@
+```bash
 cd lab1\learning-app\server
 npm update
 cd ..\..\..
@@ -7,10 +8,6 @@ npm update
 cd ..\..\..
 
 cd lab2-sqlite\learning-app\server
-npm update
-cd ..\..\..
-
-cd lab2-postgresql\learning-app\server
 npm update
 cd ..\..\..
 
@@ -42,14 +39,9 @@ cd ..\client
 npm update
 cd ..\..\..
 
-cd lab-postgresql\learning-app\server
-npm update
-cd ..\client
-npm update
-cd ..\..\..
-
 cd learning-app\server
 npm update
 cd ..\client
 npm update
 cd ..\..\..
+```

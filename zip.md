@@ -1,3 +1,4 @@
+```bash
 cd lab1
 7z a -tzip ..\zip\lab1_solution.zip * -xr!node_modules
 cd ..
@@ -31,3 +32,4 @@ cd lab7
 cd ..
 
 7z a -tzip zip\lab_final_solution.zip learning-app\* -xr!node_modules -xr!*.jpg
+```
