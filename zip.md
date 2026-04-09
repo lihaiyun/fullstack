@@ -26,10 +26,8 @@ cd lab6
 7z a -tzip ..\zip\lab6_solution.zip * -xr!node_modules
 cd ..
 
-cd lab-final
-7z a -tzip ..\zip\lab_final_solution.zip * -xr!node_modules
+cd lab7
+7z a -tzip ..\zip\lab7_solution.zip * -xr!node_modules -xr!*.jpg
 cd ..
 
-cd lab-MUI6
-7z a -tzip ..\zip\lab_MUI6_solution.zip * -xr!node_modules
-cd ..
+7z a -tzip zip\lab_final_solution.zip learning-app\* -xr!node_modules -xr!*.jpg
