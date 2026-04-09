@@ -6,9 +6,9 @@
 
 - Copy .env.example to **.env** and update the environment variables as needed.
 
-2) Install dependencies (including sqlite3):
+2) Install dependencies:
 ```bash
-npm install sqlite3
+npm install
 ```
 
 3) Start the server:
@@ -28,4 +28,3 @@ npm install sqlite3
 ## Notes
 
 - Run `npm update` to fix vulnerabilities and update dependencies to their latest versions.
-- Update DB_FILE value if you want to change the SQLite database file name and location.

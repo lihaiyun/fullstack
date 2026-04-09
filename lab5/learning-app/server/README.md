@@ -1,20 +1,4 @@
-# Learning App - Server
-
-This is the backend server for the Learning App, built with [Express.js](https://expressjs.com/) and [Sequelize](https://sequelize.org/) for MySQL.
-
-## Features
-
-- RESTful API for tutorials and users
-- JWT-based authentication
-- Password hashing with bcrypt
-- File uploads with Multer
-- CORS enabled for frontend integration
-- Environment variable support with dotenv
-
-## Prerequisites
-
-- Node.js (v18 or above recommended)
-- MySQL database
+# Server
 
 ## Setup
 
@@ -51,12 +35,3 @@ npm install
 ## Notes
 
 - Run `npm update` to fix vulnerabilities and update dependencies to their latest versions.
-
-## Tech Stack
-
-- Express.js
-- Sequelize (MySQL)
-- JWT
-- Multer
-- bcrypt
-- dotenv
