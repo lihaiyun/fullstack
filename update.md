@@ -43,5 +43,5 @@ cd learning-app\server
 npm update
 cd ..\client
 npm update
-cd ..\..\..
+cd ..\..
 ```
