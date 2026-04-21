@@ -21,5 +21,5 @@ app.use("/tutorial", tutorialRoute);
 
 let port = process.env.APP_PORT;
 app.listen(port, () => {
-    console.log(`⚡ Sever running on http://localhost:${port}`);
+    console.log(`⚡ Server running on http://localhost:${port}`);
 });
