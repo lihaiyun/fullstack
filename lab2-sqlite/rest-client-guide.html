@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REST Client Student Guide - Testing Your API with .http Files</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f6f9;
+      color: #1e2533;
+      padding: 2rem 1rem 4rem;
+      font-size: .95rem;
+      line-height: 1.6;
+    }
+
+    .page { max-width: 800px; margin: 0 auto; }
+
+    /* ── Header ── */
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header h1 { font-size: 1.9rem; font-weight: 700; color: #1a1f2e; }
+    header .subtitle { color: #555e72; margin-top: .4rem; }
+
+    /* ── Section headings ── */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1f2e;
+      margin: 2rem 0 .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 2px solid #dde3ef;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      background: #1a56db;
+      color: #fff;
+      border-radius: 50%;
+      font-size: .75rem;
+      font-weight: 700;
+      margin-right: .5rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: #fff;
+      border: 1px solid #dde3ef;
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .9rem 1.25rem;
+      border-bottom: 1px solid #eef1f7;
+      background: #fafbfd;
+    }
+
+    .badge {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      padding: .28em .7em;
+      border-radius: 5px;
+      text-transform: uppercase;
+      min-width: 52px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .badge-get    { background: #d1fae5; color: #065f46; }
+    .badge-post   { background: #dbeafe; color: #1e3a8a; }
+    .badge-put    { background: #fef3c7; color: #78350f; }
+    .badge-delete { background: #fee2e2; color: #7f1d1d; }
+
+    .card-header h2 { font-size: .95rem; font-weight: 600; }
+    .card-header .endpoint { font-family: monospace; font-size: .82rem; color: #5a6a8a; margin-left: auto; }
+
+    .card-body { padding: 1rem 1.25rem; }
+    .card-body p { color: #44506a; margin-bottom: .75rem; }
+
+    /* ── Labels ── */
+    .label {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #7a86a0;
+      margin-bottom: .3rem;
+      margin-top: .85rem;
+    }
+    .label:first-child { margin-top: 0; }
+
+    /* ── Code blocks ── */
+    .code-block {
+      position: relative;
+      background: #1e2533;
+      border-radius: 8px;
+      margin-bottom: .5rem;
+    }
+
+    .code-block pre {
+      overflow-x: auto;
+      padding: .85rem 3.5rem .85rem 1rem;
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      font-size: .81rem;
+      color: #e2e8f4;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+      background: #2e3a4e;
+      border: none;
+      color: #8fa3bf;
+      font-size: .7rem;
+      padding: .3rem .6rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .copy-btn:hover { background: #3d5068; color: #fff; }
+    .copy-btn.copied { background: #065f46; color: #d1fae5; }
+
+    /* ── Response block ── */
+    .response-block {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid #6080e0;
+      border-radius: 0 6px 6px 0;
+      padding: .7rem 1rem;
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      font-size: .8rem;
+      color: #334155;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-bottom: .5rem;
+    }
+
+    /* ── Notes / tips ── */
+    .note {
+      display: flex;
+      gap: .6rem;
+      align-items: flex-start;
+      background: #f0f4ff;
+      border-left: 3px solid #6080e0;
+      border-radius: 0 6px 6px 0;
+      padding: .6rem .85rem;
+      font-size: .82rem;
+      color: #3a4a70;
+      line-height: 1.5;
+      margin-top: .75rem;
+    }
+    .note.tip  { background: #f0fff4; border-color: #34d399; color: #064e3b; }
+    .note.warn { background: #fffbeb; border-color: #f59e0b; color: #78350f; }
+    .note .icon { font-size: 1rem; flex-shrink: 0; margin-top: .05rem; }
+
+    /* ── Status chips ── */
+    .status-list { display: flex; gap: .45rem; flex-wrap: wrap; margin-top: .75rem; }
+    .status-chip {
+      font-size: .72rem;
+      font-weight: 600;
+      padding: .2em .65em;
+      border-radius: 999px;
+      border: 1px solid;
+    }
+    .status-200 { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+    .status-201 { background: #dbeafe; color: #1e3a8a; border-color: #93c5fd; }
+    .status-400 { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
+    .status-404 { background: #fee2e2; color: #7f1d1d; border-color: #fca5a5; }
+
+    /* ── Setup steps ── */
+    .setup-steps { list-style: none; display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1rem; }
+    .setup-steps li { display: flex; align-items: flex-start; gap: .6rem; }
+    .setup-steps li span { padding-top: .1rem; }
+
+    /* ── Screenshot placeholder ── */
+    .screenshot {
+      border: 2px dashed #c9d3e8;
+      border-radius: 8px;
+      padding: 1.25rem;
+      background: #f8fafc;
+      text-align: center;
+      color: #7a86a0;
+      font-size: .82rem;
+      margin: .75rem 0;
+    }
+    .screenshot .label-inner {
+      font-weight: 700;
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #a0aec0;
+      margin-bottom: .3rem;
+    }
+
+    /* ── Inline highlight ── */
+    .hl-blue  { color: #2563eb; font-weight: 600; }
+    .hl-green { color: #059669; font-weight: 600; }
+
+    /* ── Separator label ── */
+    .separator-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: 1rem 0 .75rem;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #a0aec0;
+    }
+    .separator-row::before,
+    .separator-row::after {
+      content: '';
+      flex: 1;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* ── Variable table ── */
+    .var-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .var-table th { text-align: left; padding: .45rem .75rem; color: #44506a; border-bottom: 2px solid #dde3ef; }
+    .var-table td { padding: .45rem .75rem; border-bottom: 1px solid #eef1f7; }
+    .var-table tr:last-child td { border-bottom: none; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 2px solid #dde3ef; margin: 2rem 0; }
+
+    footer { text-align: center; margin-top: 3rem; font-size: .8rem; color: #8898b0; }
+
+    code {
+      background: #eef1f7;
+      border-radius: 4px;
+      padding: .1em .4em;
+      font-family: Consolas, monospace;
+      font-size: .85em;
+    }
+
+    kbd {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      padding: .1em .45em;
+      font-size: .8em;
+      font-family: system-ui, sans-serif;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>Testing Your REST API with REST Client</h1>
+    <p class="subtitle">VS Code Extension Student Guide - Tutorial API on <code>http://localhost:3001</code></p>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       SETUP
+  ═══════════════════════════════════════ -->
+  <div class="section-title">Before You Start</div>
+
+  <div class="card">
+    <div class="card-body">
+      <ul class="setup-steps">
+        <li>
+          <span class="step-number">1</span>
+          <span><strong>Install the REST Client extension.</strong> Open VS Code, click the Extensions icon (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>), search for <strong>REST Client</strong> by Huachao Mao, and click Install.</span>
+        </li>
+        <li>
+          <span class="step-number">2</span>
+          <span><strong>Start the server.</strong> Open a terminal in the <code>server/</code> folder and run <code>npm run dev</code>. You should see <em>Server running on http://localhost:3001</em>.</span>
+        </li>
+        <li>
+          <span class="step-number">3</span>
+          <span><strong>Open the <code>.http</code> file.</strong> In the VS Code Explorer, navigate to <code>server/test/tutorial.http</code> and open it. You will see <span class="hl-blue">Send Request</span> links appear above each request.</span>
+        </li>
+      </ul>
+
+      <div class="note tip">
+        <span class="icon">&#10003;</span>
+        <span>Any file with a <code>.http</code> or <code>.rest</code> extension is recognised by the extension automatically - no configuration needed.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       HOW TO SEND A REQUEST
+  ═══════════════════════════════════════ -->
+  <div class="section-title">How to Send a Request</div>
+
+  <div class="card">
+    <div class="card-body">
+      <p>Each block in the <code>.http</code> file is one request. You can run any request individually - you do not have to run them in order.</p>
+
+      <ul class="setup-steps">
+        <li>
+          <span class="step-number">1</span>
+          <span>Click the <span class="hl-blue">Send Request</span> link that appears directly above the request line you want to run.</span>
+        </li>
+        <li>
+          <span class="step-number">2</span>
+          <span>A new panel opens on the right showing the <strong>status code</strong>, <strong>response headers</strong>, and the <strong>response body</strong>.</span>
+        </li>
+        <li>
+          <span class="step-number">3</span>
+          <span>The response body is automatically formatted as JSON - you can collapse and expand objects by clicking the arrows on the left.</span>
+        </li>
+      </ul>
+
+      <div class="note">
+        <span class="icon">&#9432;</span>
+        <span>Requests are separated by <code>###</code> lines. Everything between two <code>###</code> markers is treated as a single request. Do not remove these separators.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       VARIABLES
+  ═══════════════════════════════════════ -->
+  <div class="section-title">Variables in the .http File</div>
+
+  <div class="card">
+    <div class="card-body">
+      <p>Variables defined with <code>@name = value</code> at the top of the file are reused throughout. This means you only need to change one place to update the server URL or the ID you are testing.</p>
+
+      <div class="label">Variables declared in tutorial.http</div>
+      <div class="code-block">
+        <pre>@baseUrl = http://localhost:3001
+@tutorialId = 1</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <p style="margin-top:.85rem;">A variable is referenced anywhere in the file using double curly braces:</p>
+
+      <div class="code-block">
+        <pre>GET {{baseUrl}}/tutorial/{{tutorialId}}</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="note tip">
+        <span class="icon">&#10003;</span>
+        <span>After you create a tutorial and get back its <code>id</code>, update <code>@tutorialId</code> at the top of the file to that value. All GET, PUT, and DELETE requests that reference <code>&#123;&#123;tutorialId&#125;&#125;</code> will then use the correct ID.</span>
+      </div>
+
+      <div class="label">All variables at a glance</div>
+      <table class="var-table">
+        <thead>
+          <tr><th>Variable</th><th>Default value</th><th>What it controls</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>@baseUrl</code></td><td><code>http://localhost:3001</code></td><td>Server base URL used in every request</td></tr>
+          <tr><td><code>@tutorialId</code></td><td><code>1</code></td><td>The <code>id</code> of the tutorial for GET / PUT / DELETE</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       1 - CREATE
+  ═══════════════════════════════════════ -->
+  <div class="section-title">1 - Create a Tutorial (POST)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-post">POST</span>
+      <h2>Create a new tutorial</h2>
+      <span class="endpoint">/tutorial</span>
+    </div>
+    <div class="card-body">
+      <p>The request line specifies the method and URL. The <code>Content-Type</code> header tells the server the body is JSON. A blank line separates the headers from the body.</p>
+
+      <div class="label">Request in tutorial.http</div>
+      <div class="code-block">
+        <pre>### Create tutorial
+POST {{baseUrl}}/tutorial
+Content-Type: application/json
+
+{
+    "title": "Learn SQLite",
+    "description": "A beginner guide to using SQLite with Sequelize ORM."
+}</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">{
+  "id": 1,
+  "title": "Learn SQLite",
+  "description": "A beginner guide to using SQLite with Sequelize ORM.",
+  "createdAt": "2026-05-02T04:00:00.000Z",
+  "updatedAt": "2026-05-02T04:00:00.000Z"
+}</div>
+
+      <div class="note warn">
+        <span class="icon">&#9888;</span>
+        <span><strong>Validation rules:</strong> <code>title</code> must be 3-100 characters and <code>description</code> must be 3-500 characters. Both are required. A missing or too-short field returns <strong>400 Bad Request</strong> with an <code>errors</code> array.</span>
+      </div>
+
+      <div class="note tip">
+        <span class="icon">&#10003;</span>
+        <span>Note the <code>id</code> in the response. Update <code>@tutorialId</code> at the top of the file to this value before running the GET, PUT, or DELETE requests below.</span>
+      </div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+        <span class="status-chip status-400">400 Bad Request</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Validation error example -->
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-post">POST</span>
+      <h2>Create tutorial - validation error</h2>
+      <span class="endpoint">/tutorial</span>
+    </div>
+    <div class="card-body">
+      <p>This example intentionally triggers a validation error so you can see what the error response looks like.</p>
+
+      <div class="label">Request in tutorial.http</div>
+      <div class="code-block">
+        <pre>### Create tutorial - validation error (title too short)
+POST {{baseUrl}}/tutorial
+Content-Type: application/json
+
+{
+    "title": "Hi",
+    "description": "Too short title."
+}</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response (400)</div>
+      <div class="response-block">{
+  "errors": [
+    "title must be at least 3 characters"
+  ]
+}</div>
+
+      <div class="status-list">
+        <span class="status-chip status-400">400 Bad Request</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       2 - GET ALL
+  ═══════════════════════════════════════ -->
+  <div class="section-title">2 - Get All Tutorials (GET)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-get">GET</span>
+      <h2>List all tutorials</h2>
+      <span class="endpoint">/tutorial</span>
+    </div>
+    <div class="card-body">
+      <p>A plain GET request with no body. The server returns a JSON array of every tutorial, ordered newest first.</p>
+
+      <div class="label">Request in tutorial.http</div>
+      <div class="code-block">
+        <pre>### Get all tutorials
+GET {{baseUrl}}/tutorial</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">[
+  {
+    "id": 1,
+    "title": "Learn SQLite",
+    "description": "A beginner guide to using SQLite with Sequelize ORM.",
+    "createdAt": "2026-05-02T04:00:00.000Z",
+    "updatedAt": "2026-05-02T04:00:00.000Z"
+  }
+]</div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-get">GET</span>
+      <h2>Search tutorials by keyword</h2>
+      <span class="endpoint">/tutorial?search=...</span>
+    </div>
+    <div class="card-body">
+      <p>Add a <code>search</code> query parameter to filter results. The server searches both <code>title</code> and <code>description</code> fields.</p>
+
+      <div class="label">Request in tutorial.http</div>
+      <div class="code-block">
+        <pre>### Get all tutorials with search
+GET {{baseUrl}}/tutorial?search=sqlite</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">[
+  {
+    "id": 1,
+    "title": "Learn SQLite",
+    "description": "A beginner guide to using SQLite with Sequelize ORM."
+  }
+]</div>
+
+      <div class="note">
+        <span class="icon">&#9432;</span>
+        <span>If no tutorials match the keyword, the server returns an empty array <code>[]</code> - not a 404 error.</span>
+      </div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       3 - GET BY ID
+  ═══════════════════════════════════════ -->
+  <div class="section-title">3 - Get a Tutorial by ID (GET)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-get">GET</span>
+      <h2>Get one tutorial</h2>
+      <span class="endpoint">/tutorial/:id</span>
+    </div>
+    <div class="card-body">
+      <p>The <code>&#123;&#123;tutorialId&#125;&#125;</code> variable is substituted with the value you set at the top of the file.</p>
+
+      <div class="label">Request in tutorial.http</div>
+      <div class="code-block">
+        <pre>### Get tutorial by id
+GET {{baseUrl}}/tutorial/{{tutorialId}}</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">{
+  "id": 1,
+  "title": "Learn SQLite",
+  "description": "A beginner guide to using SQLite with Sequelize ORM.",
+  "createdAt": "2026-05-02T04:00:00.000Z",
+  "updatedAt": "2026-05-02T04:00:00.000Z"
+}</div>
+
+      <div class="label">Response when ID does not exist (9999)</div>
+      <div class="response-block">HTTP/1.1 404 Not Found</div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+        <span class="status-chip status-404">404 Not Found</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       4 - UPDATE
+  ═══════════════════════════════════════ -->
+  <div class="section-title">4 - Update a Tutorial (PUT)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-put">PUT</span>
+      <h2>Update an existing tutorial</h2>
+      <span class="endpoint">/tutorial/:id</span>
+    </div>
+    <div class="card-body">
+      <p>Both <code>title</code> and <code>description</code> are optional in the body. Omit one to leave it unchanged on the server.</p>
+
+      <div class="label">Full update - request in tutorial.http</div>
+      <div class="code-block">
+        <pre>### Update tutorial
+PUT {{baseUrl}}/tutorial/{{tutorialId}}
+Content-Type: application/json
+
+{
+    "title": "Learn SQLite - Updated",
+    "description": "An updated guide to using SQLite with Sequelize ORM."
+}</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="separator-row">or</div>
+
+      <div class="label">Partial update (title only) - request in tutorial.http</div>
+      <div class="code-block">
+        <pre>### Update tutorial - partial (title only)
+PUT {{baseUrl}}/tutorial/{{tutorialId}}
+Content-Type: application/json
+
+{
+    "title": "Partial Update Title"
+}</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">{
+  "id": 1,
+  "title": "Learn SQLite - Updated",
+  "description": "An updated guide to using SQLite with Sequelize ORM.",
+  "createdAt": "2026-05-02T04:00:00.000Z",
+  "updatedAt": "2026-05-02T04:05:00.000Z"
+}</div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+        <span class="status-chip status-400">400 Bad Request</span>
+        <span class="status-chip status-404">404 Not Found</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       5 - DELETE
+  ═══════════════════════════════════════ -->
+  <div class="section-title">5 - Delete a Tutorial (DELETE)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-delete">DELETE</span>
+      <h2>Delete a tutorial</h2>
+      <span class="endpoint">/tutorial/:id</span>
+    </div>
+    <div class="card-body">
+      <p>No body needed. The server returns <code>200 OK</code> when the record is successfully deleted.</p>
+
+      <div class="label">Request in tutorial.http</div>
+      <div class="code-block">
+        <pre>### Delete tutorial
+DELETE {{baseUrl}}/tutorial/{{tutorialId}}</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">HTTP/1.1 200 OK</div>
+
+      <div class="note tip">
+        <span class="icon">&#10003;</span>
+        <span>After deleting, click <strong>Send Request</strong> on the <em>Get tutorial by id</em> request. You should get a <strong>404</strong>, confirming the record is gone.</span>
+      </div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+        <span class="status-chip status-404">404 Not Found</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       .HTTP FILE SYNTAX REFERENCE
+  ═══════════════════════════════════════ -->
+  <div class="section-title">.http File Syntax Reference</div>
+
+  <div class="card">
+    <div class="card-body">
+      <p>Every request follows the same structure. The parts are explained below.</p>
+
+      <div class="label">Full request anatomy</div>
+      <div class="code-block">
+        <pre><span style="color:#94a3b8;">### Optional comment / request name</span>
+<span style="color:#7dd3fc;">METHOD</span> <span style="color:#86efac;">url</span>
+<span style="color:#f9a8d4;">Header-Name: header-value</span>
+<span style="color:#94a3b8;">              ← blank line separates headers from body</span>
+<span style="color:#fde68a;">{
+    "key": "value"
+}</span></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <table class="var-table" style="margin-top:.75rem;">
+        <thead>
+          <tr><th>Part</th><th>Required?</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>###</code> separator</td><td>Yes (between requests)</td><td>Marks the boundary between requests. Also acts as a comment.</td></tr>
+          <tr><td>Method + URL</td><td>Yes</td><td>First line of every request. e.g. <code>GET http://...</code></td></tr>
+          <tr><td>Headers</td><td>Only for POST / PUT</td><td>One header per line, directly below the method line. No blank lines between headers.</td></tr>
+          <tr><td>Blank line</td><td>Yes (when body present)</td><td>Must appear between the last header and the body.</td></tr>
+          <tr><td>Body</td><td>Only for POST / PUT</td><td>JSON object. Must come after the blank line.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       READING THE RESPONSE PANEL
+  ═══════════════════════════════════════ -->
+  <div class="section-title">Reading the Response Panel</div>
+
+  <div class="card">
+    <div class="card-body">
+      <p>When you click <strong>Send Request</strong>, a panel opens on the right side of VS Code showing three things:</p>
+
+      <ul class="setup-steps" style="margin-top:.5rem;">
+        <li>
+          <span class="step-number">1</span>
+          <span><strong>Status line</strong> - e.g. <code>HTTP/1.1 200 OK</code>. The number tells you whether the request succeeded. <span class="hl-green">2xx = success</span>, <span style="color:#b45309;font-weight:600;">4xx = client error</span>.</span>
+        </li>
+        <li>
+          <span class="step-number">2</span>
+          <span><strong>Response headers</strong> - metadata like <code>Content-Type</code> and <code>Date</code>. Usually you can ignore these.</span>
+        </li>
+        <li>
+          <span class="step-number">3</span>
+          <span><strong>Response body</strong> - the JSON data returned by the server. REST Client formats it with colour and indentation automatically.</span>
+        </li>
+      </ul>
+
+      <div class="note">
+        <span class="icon">&#9432;</span>
+        <span>Common status codes you will see: <strong>200</strong> success, <strong>400</strong> bad request (validation failed - check the <code>errors</code> array in the body), <strong>404</strong> record not found.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TIPS
+  ═══════════════════════════════════════ -->
+  <div class="section-title">Useful Tips</div>
+
+  <div class="card">
+    <div class="card-body">
+      <ul class="setup-steps">
+        <li>
+          <span class="step-number" style="background:#059669;">&#10003;</span>
+          <span><strong>Run requests in order when testing the full flow</strong> - POST first to create a record, then GET to read it, PUT to update, DELETE to remove.</span>
+        </li>
+        <li>
+          <span class="step-number" style="background:#059669;">&#10003;</span>
+          <span><strong>Keep the server terminal visible.</strong> Error messages printed by the server (e.g. Sequelize errors) appear there, not in VS Code.</span>
+        </li>
+        <li>
+          <span class="step-number" style="background:#059669;">&#10003;</span>
+          <span><strong>Check the status code first.</strong> If something looks wrong, the status line tells you whether the problem is in your request (4xx) or on the server (5xx).</span>
+        </li>
+        <li>
+          <span class="step-number" style="background:#059669;">&#10003;</span>
+          <span><strong>You can add your own requests.</strong> Copy any block, paste it below a <code>###</code> separator, and modify the body or URL. Your additions are saved in the file.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>Tutorial API - REST Client Student Guide - VS Code</footer>
+</div>
+
+<script>
+  function copyCode(btn) {
+    const pre = btn.previousElementSibling;
+    navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    });
+  }
+</script>
+</body>
+</html>
