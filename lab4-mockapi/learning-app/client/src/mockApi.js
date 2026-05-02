@@ -11,8 +11,10 @@ let tutorials = [
 let nextId = 4;
 
 // GET /tutorial?search=...  or  GET /tutorial
-mock.onGet('/tutorial').reply((config) => {
-    const search = config.params?.search?.toLowerCase() ?? '';
+mock.onGet(/\/tutorial(\?.*)?$/).reply((config) => {
+    const url = new URL(config.url, 'http://localhost');
+    const search = url.searchParams.get('search')?.toLowerCase() ?? '';
+    // console.log('Search query:', search);
     const result = search
         ? tutorials.filter(t =>
             t.title.toLowerCase().includes(search) ||
