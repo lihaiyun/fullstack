@@ -1,0 +1,75 @@
+@baseUrl = http://localhost:3001
+@tutorialId = 1
+
+### Welcome
+GET {{baseUrl}}/
+
+###
+
+### Create tutorial
+POST {{baseUrl}}/tutorial
+Content-Type: application/json
+
+{
+    "title": "Learn SQLite",
+    "description": "A beginner guide to using SQLite with Sequelize ORM."
+}
+
+###
+
+### Create tutorial - validation error (title too short)
+POST {{baseUrl}}/tutorial
+Content-Type: application/json
+
+{
+    "title": "Hi",
+    "description": "Too short title."
+}
+
+###
+
+### Get all tutorials
+GET {{baseUrl}}/tutorial
+
+###
+
+### Get all tutorials with search
+GET {{baseUrl}}/tutorial?search=sqlite
+
+###
+
+### Get tutorial by id
+GET {{baseUrl}}/tutorial/{{tutorialId}}
+
+###
+
+### Get tutorial - not found
+GET {{baseUrl}}/tutorial/9999
+
+###
+
+### Update tutorial
+PUT {{baseUrl}}/tutorial/{{tutorialId}}
+Content-Type: application/json
+
+{
+    "title": "Learn SQLite - Updated",
+    "description": "An updated guide to using SQLite with Sequelize ORM."
+}
+
+###
+
+### Update tutorial - partial (title only)
+PUT {{baseUrl}}/tutorial/{{tutorialId}}
+Content-Type: application/json
+
+{
+    "title": "Partial Update Title"
+}
+
+###
+
+### Delete tutorial
+DELETE {{baseUrl}}/tutorial/{{tutorialId}}
+
+###
