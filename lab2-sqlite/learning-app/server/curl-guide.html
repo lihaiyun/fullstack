@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>curl Student Guide – Testing Your REST API</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f6f9;
+      color: #1e2533;
+      padding: 2rem 1rem 4rem;
+      font-size: .95rem;
+      line-height: 1.6;
+    }
+
+    .page { max-width: 800px; margin: 0 auto; }
+
+    /* ── Header ── */
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header h1 { font-size: 1.9rem; font-weight: 700; color: #1a1f2e; }
+    header .subtitle { color: #555e72; margin-top: .4rem; }
+
+    /* ── Section headings ── */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1f2e;
+      margin: 2rem 0 .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 2px solid #dde3ef;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      background: #1a56db;
+      color: #fff;
+      border-radius: 50%;
+      font-size: .75rem;
+      font-weight: 700;
+      margin-right: .5rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: #fff;
+      border: 1px solid #dde3ef;
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .9rem 1.25rem;
+      border-bottom: 1px solid #eef1f7;
+      background: #fafbfd;
+    }
+
+    .badge {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      padding: .28em .7em;
+      border-radius: 5px;
+      text-transform: uppercase;
+      min-width: 52px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .badge-get    { background: #d1fae5; color: #065f46; }
+    .badge-post   { background: #dbeafe; color: #1e3a8a; }
+    .badge-put    { background: #fef3c7; color: #78350f; }
+    .badge-delete { background: #fee2e2; color: #7f1d1d; }
+
+    .card-header h2 { font-size: .95rem; font-weight: 600; }
+    .card-header .endpoint { font-family: monospace; font-size: .82rem; color: #5a6a8a; margin-left: auto; }
+
+    .card-body { padding: 1rem 1.25rem; }
+    .card-body p { color: #44506a; margin-bottom: .75rem; }
+
+    /* ── Labels ── */
+    .label {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #7a86a0;
+      margin-bottom: .3rem;
+      margin-top: .85rem;
+    }
+    .label:first-child { margin-top: 0; }
+
+    /* ── Code blocks ── */
+    .code-block {
+      position: relative;
+      background: #1e2533;
+      border-radius: 8px;
+      margin-bottom: .5rem;
+    }
+
+    .code-block pre {
+      overflow-x: auto;
+      padding: .85rem 3.5rem .85rem 1rem;
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      font-size: .81rem;
+      color: #e2e8f4;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+      background: #2e3a4e;
+      border: none;
+      color: #8fa3bf;
+      font-size: .7rem;
+      padding: .3rem .6rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .copy-btn:hover { background: #3d5068; color: #fff; }
+    .copy-btn.copied { background: #065f46; color: #d1fae5; }
+
+    /* ── Response block ── */
+    .response-block {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid #6080e0;
+      border-radius: 0 6px 6px 0;
+      padding: .7rem 1rem;
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      font-size: .8rem;
+      color: #334155;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-bottom: .5rem;
+    }
+
+    /* ── Notes / tips ── */
+    .note {
+      display: flex;
+      gap: .6rem;
+      align-items: flex-start;
+      background: #f0f4ff;
+      border-left: 3px solid #6080e0;
+      border-radius: 0 6px 6px 0;
+      padding: .6rem .85rem;
+      font-size: .82rem;
+      color: #3a4a70;
+      line-height: 1.5;
+      margin-top: .75rem;
+    }
+    .note.tip  { background: #f0fff4; border-color: #34d399; color: #064e3b; }
+    .note.warn { background: #fffbeb; border-color: #f59e0b; color: #78350f; }
+    .note .icon { font-size: 1rem; flex-shrink: 0; margin-top: .05rem; }
+
+    /* ── Status chips ── */
+    .status-list { display: flex; gap: .45rem; flex-wrap: wrap; margin-top: .75rem; }
+    .status-chip {
+      font-size: .72rem;
+      font-weight: 600;
+      padding: .2em .65em;
+      border-radius: 999px;
+      border: 1px solid;
+    }
+    .status-200 { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+    .status-201 { background: #dbeafe; color: #1e3a8a; border-color: #93c5fd; }
+    .status-400 { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
+    .status-404 { background: #fee2e2; color: #7f1d1d; border-color: #fca5a5; }
+
+    /* ── Setup steps ── */
+    .setup-steps { list-style: none; display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1rem; }
+    .setup-steps li { display: flex; align-items: flex-start; gap: .6rem; }
+    .setup-steps li span { padding-top: .1rem; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 2px solid #dde3ef; margin: 2rem 0; }
+
+    footer { text-align: center; margin-top: 3rem; font-size: .8rem; color: #8898b0; }
+
+    code {
+      background: #eef1f7;
+      border-radius: 4px;
+      padding: .1em .4em;
+      font-family: Consolas, monospace;
+      font-size: .85em;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>Testing Your REST API with curl</h1>
+    <p class="subtitle">Windows CMD Student Guide &mdash; Tutorial API on <code>http://localhost:3001</code></p>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       BEFORE YOU START
+  ═══════════════════════════════════════ -->
+  <div class="section-title">Before You Start</div>
+
+  <div class="card">
+    <div class="card-body">
+      <ul class="setup-steps">
+        <li>
+          <span class="step-number">1</span>
+          <span><strong>Start the server.</strong> Open a terminal in the <code>server/</code> folder and run <code>npm run dev</code>. You should see <em>Server running on port 3001</em>.</span>
+        </li>
+        <li>
+          <span class="step-number">2</span>
+          <span><strong>Open a second CMD window.</strong> Press <kbd>Win + R</kbd>, type <code>cmd</code>, and press Enter. Keep it open while the server runs in the first window.</span>
+        </li>
+        <li>
+          <span class="step-number">3</span>
+          <span><strong>Verify curl is available.</strong> Run the command below — you should see a version number, not an error.</span>
+        </li>
+      </ul>
+
+      <div class="code-block">
+        <pre>curl --version</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="note tip">
+        <span class="icon">&#10003;</span>
+        <span>curl is built into Windows 10 and 11. If the command is not found, update Windows or download curl from <strong>curl.se</strong>.</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       1 — CREATE
+  ═══════════════════════════════════════ -->
+  <div class="section-title">1 &mdash; Create a Tutorial (POST)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-post">POST</span>
+      <h2>Create a new tutorial</h2>
+      <span class="endpoint">/tutorial</span>
+    </div>
+    <div class="card-body">
+      <p>This sends a JSON body to the server. The <code>-H</code> flag sets the content type so the server knows to parse the body as JSON. The <code>-d</code> flag provides the data.</p>
+
+      <div class="label">Command</div>
+      <div class="code-block">
+        <pre>curl -X POST http://localhost:3001/tutorial -H "Content-Type: application/json" -d "{\"title\": \"My First Tutorial\", \"description\": \"This is a description of my first tutorial.\"}"</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">{"id": 1, "title": "My First Tutorial", "description": "This is a description of my first tutorial."}</div>
+
+      <div class="note">
+        <span class="icon">&#9432;</span>
+        <span>In CMD, use <code>\"</code> to include double quotes inside a double-quoted string. Do <strong>not</strong> use single quotes — CMD does not support them for quoting.</span>
+      </div>
+
+      <div class="note warn">
+        <span class="icon">&#9888;</span>
+        <span><strong>Validation rules:</strong> <code>title</code> must be 3–100 characters and <code>description</code> must be 3–500 characters. Both fields are required. A missing or too-short field returns <strong>400 Bad Request</strong>.</span>
+      </div>
+
+      <div class="status-list">
+        <span class="status-chip status-201">201 Created</span>
+        <span class="status-chip status-400">400 Bad Request</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       2 — GET ALL
+  ═══════════════════════════════════════ -->
+  <div class="section-title">2 &mdash; Get All Tutorials (GET)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-get">GET</span>
+      <h2>List all tutorials</h2>
+      <span class="endpoint">/tutorial</span>
+    </div>
+    <div class="card-body">
+      <p>A plain GET request — no flags needed beyond the URL. The server returns a JSON array of every tutorial in the database.</p>
+
+      <div class="label">Command</div>
+      <div class="code-block">
+        <pre>curl http://localhost:3001/tutorial</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">[{"id": 1, "title": "My First Tutorial", "description": "This is a description of my first tutorial."}]</div>
+
+      <p style="margin-top:.85rem;">Add a <code>search</code> query parameter to filter by keyword. Wrap the URL in quotes to prevent CMD from misreading the <code>&amp;</code> or <code>?</code> characters.</p>
+
+      <div class="label">With Search Query</div>
+      <div class="code-block">
+        <pre>curl "http://localhost:3001/tutorial?search=first"</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">[{"id": 1, "title": "My First Tutorial", "description": "This is a description of my first tutorial."}]</div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       3 — GET BY ID
+  ═══════════════════════════════════════ -->
+  <div class="section-title">3 &mdash; Get a Tutorial by ID (GET)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-get">GET</span>
+      <h2>Get one tutorial</h2>
+      <span class="endpoint">/tutorial/:id</span>
+    </div>
+    <div class="card-body">
+      <p>Replace <code>1</code> at the end of the URL with the <code>id</code> value returned when you created the tutorial.</p>
+
+      <div class="label">Command</div>
+      <div class="code-block">
+        <pre>curl http://localhost:3001/tutorial/1</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">{"id": 1, "title": "My First Tutorial", "description": "This is a description of my first tutorial."}</div>
+
+      <div class="note warn">
+        <span class="icon">&#9888;</span>
+        <span>If the ID does not exist, the server returns <strong>404 Not Found</strong> with an error message.</span>
+      </div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+        <span class="status-chip status-404">404 Not Found</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       4 — UPDATE
+  ═══════════════════════════════════════ -->
+  <div class="section-title">4 &mdash; Update a Tutorial (PUT)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-put">PUT</span>
+      <h2>Update an existing tutorial</h2>
+      <span class="endpoint">/tutorial/:id</span>
+    </div>
+    <div class="card-body">
+      <p>Same structure as POST — include the ID in the URL path. Both <code>title</code> and <code>description</code> are optional; omit either one to leave it unchanged.</p>
+
+      <div class="label">Command</div>
+      <div class="code-block">
+        <pre>curl -X PUT http://localhost:3001/tutorial/1 -H "Content-Type: application/json" -d "{\"title\": \"Updated Title\", \"description\": \"Updated description text.\"}"</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">{"id": 1, "title": "Updated Title", "description": "Updated description text."}</div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+        <span class="status-chip status-404">404 Not Found</span>
+        <span class="status-chip status-400">400 Bad Request</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       5 — DELETE
+  ═══════════════════════════════════════ -->
+  <div class="section-title">5 &mdash; Delete a Tutorial (DELETE)</div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-delete">DELETE</span>
+      <h2>Delete a tutorial</h2>
+      <span class="endpoint">/tutorial/:id</span>
+    </div>
+    <div class="card-body">
+      <p>No body needed — just set the method to <code>DELETE</code> and include the ID in the URL.</p>
+
+      <div class="label">Command</div>
+      <div class="code-block">
+        <pre>curl -X DELETE http://localhost:3001/tutorial/1</pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <div class="label">Expected Response</div>
+      <div class="response-block">{"message": "Tutorial deleted successfully."}</div>
+
+      <div class="note tip">
+        <span class="icon">&#10003;</span>
+        <span>Run <code>curl http://localhost:3001/tutorial/1</code> again after deleting — you should get a <strong>404</strong>, confirming the record is gone.</span>
+      </div>
+
+      <div class="status-list">
+        <span class="status-chip status-200">200 OK</span>
+        <span class="status-chip status-404">404 Not Found</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       QUICK REFERENCE
+  ═══════════════════════════════════════ -->
+  <div class="section-title">Quick Reference</div>
+
+  <div class="card">
+    <div class="card-body">
+      <table style="width:100%;border-collapse:collapse;font-size:.85rem;">
+        <thead>
+          <tr style="border-bottom:2px solid #dde3ef;">
+            <th style="text-align:left;padding:.5rem .75rem;color:#44506a;">Flag</th>
+            <th style="text-align:left;padding:.5rem .75rem;color:#44506a;">What it does</th>
+            <th style="text-align:left;padding:.5rem .75rem;color:#44506a;">Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:.5rem .75rem;font-family:monospace;">-X</td>
+            <td style="padding:.5rem .75rem;">Sets the HTTP method</td>
+            <td style="padding:.5rem .75rem;font-family:monospace;">-X POST</td>
+          </tr>
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:.5rem .75rem;font-family:monospace;">-H</td>
+            <td style="padding:.5rem .75rem;">Adds a request header</td>
+            <td style="padding:.5rem .75rem;font-family:monospace;">-H "Content-Type: application/json"</td>
+          </tr>
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:.5rem .75rem;font-family:monospace;">-d</td>
+            <td style="padding:.5rem .75rem;">Sends data in the request body</td>
+            <td style="padding:.5rem .75rem;font-family:monospace;">-d "{\"key\": \"value\"}"</td>
+          </tr>
+          <tr>
+            <td style="padding:.5rem .75rem;font-family:monospace;">-v</td>
+            <td style="padding:.5rem .75rem;">Verbose — shows full request &amp; response headers</td>
+            <td style="padding:.5rem .75rem;font-family:monospace;">curl -v http://localhost:3001/tutorial</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>Tutorial API &mdash; curl Student Guide &mdash; Windows CMD</footer>
+</div>
+
+<script>
+  function copyCode(btn) {
+    const pre = btn.previousElementSibling;
+    navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    });
+  }
+</script>
+</body>
+</html>
