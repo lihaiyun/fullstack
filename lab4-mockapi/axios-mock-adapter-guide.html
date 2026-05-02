@@ -428,7 +428,7 @@
         <ul class="step-list" style="counter-reset: steps 1;">
             <li>
                 <div>
-                    <strong>Create the mock - <code>src/mockApi.js</code></strong>
+                    <strong>Create the mock - <code>src/mock-api/tutorialApi.js</code></strong>
                     <p>Pass your Axios instance to MockAdapter, then define handlers for each route.</p>
                 </div>
             </li>
@@ -437,10 +437,10 @@
         <div class="code-block">
             <div class="code-header">
                 <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
-                <span class="filename">src/mockApi.js</span>
+                <span class="filename">src/mock-api/tutorialApi.js</span>
             </div>
             <pre><span class="kw">import</span> <span class="cls">MockAdapter</span> <span class="kw">from</span> <span class="str">'axios-mock-adapter'</span>;
-<span class="kw">import</span> <span class="var">http</span> <span class="kw">from</span> <span class="str">'./http'</span>;
+<span class="kw">import</span> <span class="var">http</span> <span class="kw">from</span> <span class="str">'../http'</span>;
 
 <span class="cmt">// Wrap our axios instance. delayResponse simulates network latency (ms).</span>
 <span class="kw">const</span> <span class="var">mock</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">MockAdapter</span>(<span class="var">http</span>, <span class="op">{</span> delayResponse<span class="op">:</span> <span class="num">300</span> <span class="op">}</span>);
@@ -504,7 +504,7 @@
         <ul class="step-list" style="counter-reset: steps 2;">
             <li>
                 <div>
-                    <strong>Import mockApi in <code>src/main.jsx</code></strong>
+                    <strong>Import tutorialApi in <code>src/main.jsx</code></strong>
                     <p>Import it once at the app entry point - before anything else renders. This ensures every Axios call is intercepted.</p>
                 </div>
             </li>
@@ -518,7 +518,7 @@
             <pre><span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;
 <span class="kw">import</span> ReactDOM <span class="kw">from</span> <span class="str">'react-dom/client'</span>;
 <span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App'</span>;
-<span class="kw">import</span> <span class="str">'./mockApi'</span>; <span class="cmt">// &lt;-- must be imported here so it registers before any request</span>
+<span class="kw">import</span> <span class="str">'./mock-api/tutorialApi'</span>; <span class="cmt">// &lt;-- must be imported here so it registers before any request</span>
 
 ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
     <span class="op">&lt;</span>App <span class="op">/&gt;</span>
@@ -644,7 +644,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
         <div class="section-label">Section 8</div>
         <h2>Managing In-Memory Data</h2>
         <p>
-            The mock "database" is just a plain JavaScript array declared at the top of <code>mockApi.js</code>.
+            The mock "database" is just a plain JavaScript array declared at the top of <code>tutorialApi.js</code>.
             Every handler reads from and writes to this array, giving you full CRUD without a real database.
         </p>
 
@@ -749,7 +749,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
     <section>
         <div class="section-label">Section 11</div>
         <h2>Switching to a Real API</h2>
-        <p>When your backend is ready, simply stop importing <code>mockApi.js</code>. All your component code stays unchanged.</p>
+        <p>When your backend is ready, simply stop importing <code>mock-api/tutorialApi.js</code>. All your component code stays unchanged.</p>
 
         <div class="code-block">
             <div class="code-header">
@@ -757,7 +757,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
                 <span class="filename">src/main.jsx</span>
             </div>
             <pre><span class="cmt">// Remove or comment out this one line to use the real server:</span>
-<span class="cmt">// import './mockApi';</span>
+<span class="cmt">// import './mock-api/tutorialApi';</span>
 
 <span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;
 <span class="kw">import</span> ReactDOM <span class="kw">from</span> <span class="str">'react-dom/client'</span>;
@@ -770,7 +770,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
             <div class="callout-icon">✅</div>
             <div class="callout-body">
                 <h4>Zero component changes needed</h4>
-                <p>Because components only import <code>http.js</code> and not <code>mockApi.js</code> directly, removing the mock import is the only change required to go live.</p>
+                <p>Because components only import <code>http.js</code> and not <code>tutorialApi.js</code> directly, removing the mock import is the only change required to go live.</p>
             </div>
         </div>
     </section>

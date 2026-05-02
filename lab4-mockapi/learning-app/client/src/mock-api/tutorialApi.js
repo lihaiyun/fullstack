@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import http from './http';
+import http from '../http';
 
 const mock = new MockAdapter(http, { delayResponse: 300 });
 
