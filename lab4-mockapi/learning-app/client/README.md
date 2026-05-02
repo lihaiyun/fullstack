@@ -7,9 +7,7 @@
 npm install
 ```
 
-2) Make sure the backend server is running before starting the client.
-
-3) Start the development server for the React App:
+2) Start the development server for the React App:
 ```bash
    npm run dev
 ```
