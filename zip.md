@@ -8,7 +8,7 @@ cd lab2
 cd ..
 
 cd lab2-sqlite
-7z a -tzip ..\zip\lab2_sqlite_solution.zip * -xr!node_modules -xr!.env
+7z a -tzip ..\zip\lab2_sqlite_solution.zip learning-app\* -xr!node_modules -xr!.env -xr!data
 cd ..
 
 cd lab3
@@ -17,6 +17,10 @@ cd ..
 
 cd lab4
 7z a -tzip ..\zip\lab4_solution.zip * -xr!node_modules -xr!.env
+cd ..
+
+cd lab4-mockapi
+7z a -tzip ..\zip\lab4_mockapi_solution.zip learning-app\* -xr!node_modules -xr!.env
 cd ..
 
 cd lab5
