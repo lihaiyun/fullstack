@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>axios-mock-adapter Guide</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --surface: #f8f9fb;
+            --surface2: #f1f3f7;
+            --border: #e2e6ef;
+            --accent: #5c6ef8;
+            --accent2: #7c3aed;
+            --green: #16a34a;
+            --yellow: #ca8a04;
+            --red: #dc2626;
+            --blue: #2563eb;
+            --orange: #ea580c;
+            --text: #0f1117;
+            --muted: #374151;
+            --code-bg: #f6f8fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, #eef0fd 0%, #f8f9fb 60%);
+            border-bottom: 1px solid var(--border);
+            padding: 60px 40px 50px;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(92,110,248,.15);
+            color: var(--accent);
+            border: 1px solid rgba(92,110,248,.3);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+        .hero h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #1e2330, #5c6ef8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ── Layout ── */
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+        /* ── Section ── */
+        section { margin-bottom: 52px; }
+        .section-label {
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        section > h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: var(--text);
+        }
+        section > p, section > ul, section > ol {
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+        ul, ol { padding-left: 22px; }
+        li { margin-bottom: 6px; }
+        li strong { color: var(--text); }
+
+        /* ── Card ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        .card p { color: var(--muted); font-size: .93rem; }
+
+        /* ── Code blocks ── */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 18px 0;
+        }
+        .code-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+        }
+        .code-header .dot { width: 11px; height: 11px; border-radius: 50%; }
+        .dot-r { background: #ff5f57; }
+        .dot-y { background: #febc2e; }
+        .dot-g { background: #28c840; }
+        .code-header .filename {
+            font-size: .8rem;
+            color: var(--muted);
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            margin-left: 6px;
+        }
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: .85rem;
+            line-height: 1.6;
+        }
+
+        /* ── Syntax highlighting ── */
+        .kw  { color: #7c3aed; }   /* keyword */
+        .fn  { color: #1d4ed8; }   /* function / method */
+        .str { color: #15803d; }   /* string */
+        .num { color: #b45309; }   /* number */
+        .cmt { color: #6b7280; font-style: italic; } /* comment */
+        .var { color: #b91c1c; }   /* variable / param */
+        .cls { color: #b45309; }   /* class / type */
+        .op  { color: #0369a1; }   /* operator / punctuation */
+        .rx  { color: #b91c1c; }   /* regex */
+
+        /* ── Method badges ── */
+        .method-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 18px 0; }
+        .method-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: .72rem;
+            font-weight: 700;
+            font-family: monospace;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .badge-get    { background: rgba(34,197,94,.15);  color: var(--green);  border: 1px solid rgba(34,197,94,.3); }
+        .badge-post   { background: rgba(59,130,246,.15); color: var(--blue);   border: 1px solid rgba(59,130,246,.3); }
+        .badge-put    { background: rgba(234,179,8,.15);  color: var(--yellow); border: 1px solid rgba(234,179,8,.3); }
+        .badge-delete { background: rgba(239,68,68,.15);  color: var(--red);    border: 1px solid rgba(239,68,68,.3); }
+        .method-card div p { color: var(--muted); font-size: .85rem; }
+        .method-card div strong { color: var(--text); font-size: .9rem; }
+
+        /* ── Flow diagram ── */
+        .flow {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin: 24px 0;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .flow-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: .88rem;
+            text-align: center;
+            min-width: 110px;
+        }
+        .flow-box.highlight { border-color: var(--accent); background: rgba(92,110,248,.1); color: var(--accent); font-weight: 600; }
+        .flow-arrow { color: var(--muted); font-size: 1.2rem; }
+
+        /* ── Callout ── */
+        .callout {
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 18px 0;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .callout-info    { background: rgba(59,130,246,.1);  border: 1px solid rgba(59,130,246,.25); }
+        .callout-warning { background: rgba(234,179,8,.1);   border: 1px solid rgba(234,179,8,.25); }
+        .callout-tip     { background: rgba(34,197,94,.1);   border: 1px solid rgba(34,197,94,.25); }
+        .callout-icon { font-size: 1.2rem; margin-top: 2px; }
+        .callout-body h4 { font-size: .9rem; font-weight: 600; margin-bottom: 4px; }
+        .callout-body p  { color: var(--muted); font-size: .9rem; }
+        .callout-info    .callout-body h4 { color: var(--blue); }
+        .callout-warning .callout-body h4 { color: var(--yellow); }
+        .callout-tip     .callout-body h4 { color: var(--green); }
+
+        /* ── Step list ── */
+        .step-list { list-style: none; padding: 0; counter-reset: steps; }
+        .step-list li {
+            counter-increment: steps;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .step-list li::before {
+            content: counter(steps);
+            background: var(--accent);
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .step-list li div strong { display: block; color: var(--text); margin-bottom: 4px; }
+        .step-list li div p { color: var(--muted); font-size: .92rem; }
+
+        /* ── Comparison table ── */
+        .compare { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: .9rem; }
+        .compare th, .compare td { padding: 12px 16px; text-align: left; border: 1px solid var(--border); }
+        .compare th { background: var(--surface2); color: var(--text); font-weight: 600; }
+        .compare td { color: var(--muted); background: var(--surface); }
+        .compare td:first-child { color: var(--text); font-weight: 500; }
+        .tick { color: var(--green); }
+        .cross { color: var(--red); }
+
+        /* ── Footer ── */
+        .footer {
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+            padding: 28px 24px;
+            text-align: center;
+            color: var(--muted);
+            font-size: .85rem;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        code {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: .85em;
+            color: var(--text);
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.7rem; }
+            .flow { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════ HERO ══════════════ -->
+<div class="hero">
+    <h1>axios-mock-adapter</h1>
+    <p>Simulate a full REST API entirely in the browser - no server required. Build and test your frontend independently.</p>
+</div>
+
+<div class="container">
+
+    <!-- ══════════════ 1. WHAT & WHY ══════════════ -->
+    <section>
+        <div class="section-label">Section 1</div>
+        <h2>What is axios-mock-adapter?</h2>
+        <p>
+            <strong style="color:var(--text)">axios-mock-adapter</strong> is a library that intercepts every Axios HTTP request
+            <em>before</em> it leaves the browser and returns a pre-programmed fake response instead.
+            Your React components never know the difference - they still call <code>http.get()</code>,
+            <code>http.post()</code>, etc., and get real-looking data back.
+        </p>
+
+        <div class="flow">
+            <div class="flow-box">React component<br><small style="color:var(--muted)">calls http.get()</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Axios</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box highlight">MockAdapter<br><small>intercepts here</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box" style="color:var(--red);border-color:rgba(239,68,68,.3)">Real server<br><small style="color:var(--muted)">(never reached)</small></div>
+        </div>
+        <div class="flow" style="margin-top:-10px">
+            <div class="flow-box" style="min-width:380px; text-align:left">
+                <span style="color:var(--muted); font-size:.82rem">Instead, MockAdapter returns your fake data back to the component</span>
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <div class="callout-icon">💡</div>
+            <div class="callout-body">
+                <h4>Why use it?</h4>
+                <p>Frontend and backend teams can work in parallel. You can build and demo the full UI before writing a single line of server code.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ 2. REAL VS MOCK ══════════════ -->
+    <section>
+        <div class="section-label">Section 2</div>
+        <h2>Real API vs Mock API</h2>
+        <table class="compare">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Real API (Express server)</th>
+                    <th>Mock API (axios-mock-adapter)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Needs a running server</td>
+                    <td><span class="tick">Yes</span></td>
+                    <td><span class="cross">No</span></td>
+                </tr>
+                <tr>
+                    <td>Data persists after refresh</td>
+                    <td><span class="tick">Yes</span></td>
+                    <td><span class="cross">No (in-memory only)</span></td>
+                </tr>
+                <tr>
+                    <td>Component code changes needed</td>
+                    <td><span class="cross">No</span></td>
+                    <td><span class="cross">No</span></td>
+                </tr>
+                <tr>
+                    <td>Works offline / in class</td>
+                    <td><span class="cross">No</span></td>
+                    <td><span class="tick">Yes</span></td>
+                </tr>
+                <tr>
+                    <td>Simulate errors & edge cases</td>
+                    <td>Hard</td>
+                    <td><span class="tick">Easy</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ══════════════ 3. INSTALLATION ══════════════ -->
+    <section>
+        <div class="section-label">Section 3</div>
+        <h2>Installation</h2>
+        <p>Install alongside Axios in your React project:</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">terminal</span>
+            </div>
+            <pre><span class="fn">npm</span> <span class="str">install</span> axios axios-mock-adapter</pre>
+        </div>
+
+        <div class="callout callout-warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-body">
+                <h4>Important: install order</h4>
+                <p>axios-mock-adapter wraps your existing Axios instance. You must create the Axios instance first, then pass it to MockAdapter.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ 4. SETUP ══════════════ -->
+    <section>
+        <div class="section-label">Section 4</div>
+        <h2>Project Setup (3 files)</h2>
+
+        <ul class="step-list">
+            <li>
+                <div>
+                    <strong>Create your Axios instance - <code>src/http.js</code></strong>
+                    <p>A single shared instance ensures all requests go through the same interceptors.</p>
+                </div>
+            </li>
+        </ul>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">src/http.js</span>
+            </div>
+            <pre><span class="kw">import</span> axios <span class="kw">from</span> <span class="str">'axios'</span>;
+
+<span class="kw">const</span> <span class="var">http</span> <span class="op">=</span> axios.<span class="fn">create</span>(<span class="op">{</span>
+    baseURL<span class="op">:</span> <span class="str">'http://localhost:3001'</span>,
+<span class="op">}</span>);
+
+<span class="kw">export default</span> <span class="var">http</span>;</pre>
+        </div>
+
+        <ul class="step-list" style="counter-reset: steps 1;">
+            <li>
+                <div>
+                    <strong>Create the mock - <code>src/mockApi.js</code></strong>
+                    <p>Pass your Axios instance to MockAdapter, then define handlers for each route.</p>
+                </div>
+            </li>
+        </ul>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">src/mockApi.js</span>
+            </div>
+            <pre><span class="kw">import</span> <span class="cls">MockAdapter</span> <span class="kw">from</span> <span class="str">'axios-mock-adapter'</span>;
+<span class="kw">import</span> <span class="var">http</span> <span class="kw">from</span> <span class="str">'./http'</span>;
+
+<span class="cmt">// Wrap our axios instance. delayResponse simulates network latency (ms).</span>
+<span class="kw">const</span> <span class="var">mock</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">MockAdapter</span>(<span class="var">http</span>, <span class="op">{</span> delayResponse<span class="op">:</span> <span class="num">300</span> <span class="op">}</span>);
+
+<span class="cmt">// In-memory "database"</span>
+<span class="kw">let</span> <span class="var">tutorials</span> <span class="op">=</span> <span class="op">[</span>
+    <span class="op">{</span> id<span class="op">:</span> <span class="num">1</span>, title<span class="op">:</span> <span class="str">'React Basics'</span>, description<span class="op">:</span> <span class="str">'Intro to components.'</span> <span class="op">}</span>,
+    <span class="op">{</span> id<span class="op">:</span> <span class="num">2</span>, title<span class="op">:</span> <span class="str">'State & Effects'</span>, description<span class="op">:</span> <span class="str">'useState and useEffect.'</span> <span class="op">}</span>,
+<span class="op">]</span>;
+<span class="kw">let</span> <span class="var">nextId</span> <span class="op">=</span> <span class="num">3</span>;
+
+<span class="cmt">// ── GET /tutorial  (with optional ?search= query) ──</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="rx">/\/tutorial(\?.*)?$/</span>).<span class="fn">reply</span>((<span class="var">config</span>) <span class="op">=></span> <span class="op">{</span>
+    <span class="kw">const</span> <span class="var">url</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">URL</span>(<span class="var">config</span>.url, <span class="str">'http://localhost'</span>);
+    <span class="kw">const</span> <span class="var">search</span> <span class="op">=</span> <span class="var">url</span>.searchParams.<span class="fn">get</span>(<span class="str">'search'</span>)<span class="op">?.</span><span class="fn">toLowerCase</span>() <span class="op">??</span> <span class="str">''</span>;
+    <span class="kw">const</span> <span class="var">result</span> <span class="op">=</span> <span class="var">search</span>
+        <span class="op">?</span> <span class="var">tutorials</span>.<span class="fn">filter</span>(<span class="var">t</span> <span class="op">=></span>
+            <span class="var">t</span>.title.<span class="fn">toLowerCase</span>().<span class="fn">includes</span>(<span class="var">search</span>) <span class="op">||</span>
+            <span class="var">t</span>.description.<span class="fn">toLowerCase</span>().<span class="fn">includes</span>(<span class="var">search</span>))
+        <span class="op">:</span> <span class="var">tutorials</span>;
+    <span class="kw">return</span> <span class="op">[</span><span class="num">200</span>, <span class="var">result</span><span class="op">]</span>;
+<span class="op">}</span>);
+
+<span class="cmt">// ── GET /tutorial/:id ──</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="rx">/\/tutorial\/\d+/</span>).<span class="fn">reply</span>((<span class="var">config</span>) <span class="op">=></span> <span class="op">{</span>
+    <span class="kw">const</span> <span class="var">id</span> <span class="op">=</span> <span class="fn">parseInt</span>(<span class="var">config</span>.url.<span class="fn">split</span>(<span class="str">'/'</span>).<span class="fn">pop</span>());
+    <span class="kw">const</span> <span class="var">tutorial</span> <span class="op">=</span> <span class="var">tutorials</span>.<span class="fn">find</span>(<span class="var">t</span> <span class="op">=></span> <span class="var">t</span>.id <span class="op">===</span> <span class="var">id</span>);
+    <span class="kw">return</span> <span class="var">tutorial</span> <span class="op">?</span> <span class="op">[</span><span class="num">200</span>, <span class="var">tutorial</span><span class="op">]</span> <span class="op">:</span> <span class="op">[</span><span class="num">404</span>, <span class="op">{</span> message<span class="op">:</span> <span class="str">'Not found'</span> <span class="op">}</span><span class="op">]</span>;
+<span class="op">}</span>);
+
+<span class="cmt">// ── POST /tutorial ──</span>
+<span class="var">mock</span>.<span class="fn">onPost</span>(<span class="str">'/tutorial'</span>).<span class="fn">reply</span>((<span class="var">config</span>) <span class="op">=></span> <span class="op">{</span>
+    <span class="kw">const</span> <span class="var">body</span> <span class="op">=</span> JSON.<span class="fn">parse</span>(<span class="var">config</span>.data);
+    <span class="kw">const</span> <span class="var">newTutorial</span> <span class="op">=</span> <span class="op">{</span> id<span class="op">:</span> <span class="var">nextId</span><span class="op">++</span>, <span class="op">...</span><span class="var">body</span>, createdAt<span class="op">:</span> <span class="kw">new</span> <span class="cls">Date</span>().<span class="fn">toISOString</span>() <span class="op">}</span>;
+    <span class="var">tutorials</span>.<span class="fn">push</span>(<span class="var">newTutorial</span>);
+    <span class="kw">return</span> <span class="op">[</span><span class="num">201</span>, <span class="var">newTutorial</span><span class="op">]</span>;
+<span class="op">}</span>);
+
+<span class="cmt">// ── PUT /tutorial/:id ──</span>
+<span class="var">mock</span>.<span class="fn">onPut</span>(<span class="rx">/\/tutorial\/\d+/</span>).<span class="fn">reply</span>((<span class="var">config</span>) <span class="op">=></span> <span class="op">{</span>
+    <span class="kw">const</span> <span class="var">id</span> <span class="op">=</span> <span class="fn">parseInt</span>(<span class="var">config</span>.url.<span class="fn">split</span>(<span class="str">'/'</span>).<span class="fn">pop</span>());
+    <span class="kw">const</span> <span class="var">body</span> <span class="op">=</span> JSON.<span class="fn">parse</span>(<span class="var">config</span>.data);
+    <span class="kw">const</span> <span class="var">index</span> <span class="op">=</span> <span class="var">tutorials</span>.<span class="fn">findIndex</span>(<span class="var">t</span> <span class="op">=></span> <span class="var">t</span>.id <span class="op">===</span> <span class="var">id</span>);
+    <span class="kw">if</span> (<span class="var">index</span> <span class="op">=== -</span><span class="num">1</span>) <span class="kw">return</span> <span class="op">[</span><span class="num">404</span>, <span class="op">{</span> message<span class="op">:</span> <span class="str">'Not found'</span> <span class="op">}</span><span class="op">]</span>;
+    <span class="var">tutorials</span><span class="op">[</span><span class="var">index</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span> <span class="op">...</span><span class="var">tutorials</span><span class="op">[</span><span class="var">index</span><span class="op">]</span>, <span class="op">...</span><span class="var">body</span> <span class="op">}</span>;
+    <span class="kw">return</span> <span class="op">[</span><span class="num">200</span>, <span class="var">tutorials</span><span class="op">[</span><span class="var">index</span><span class="op">]</span><span class="op">]</span>;
+<span class="op">}</span>);
+
+<span class="cmt">// ── DELETE /tutorial/:id ──</span>
+<span class="var">mock</span>.<span class="fn">onDelete</span>(<span class="rx">/\/tutorial\/\d+/</span>).<span class="fn">reply</span>((<span class="var">config</span>) <span class="op">=></span> <span class="op">{</span>
+    <span class="kw">const</span> <span class="var">id</span> <span class="op">=</span> <span class="fn">parseInt</span>(<span class="var">config</span>.url.<span class="fn">split</span>(<span class="str">'/'</span>).<span class="fn">pop</span>());
+    <span class="kw">const</span> <span class="var">index</span> <span class="op">=</span> <span class="var">tutorials</span>.<span class="fn">findIndex</span>(<span class="var">t</span> <span class="op">=></span> <span class="var">t</span>.id <span class="op">===</span> <span class="var">id</span>);
+    <span class="kw">if</span> (<span class="var">index</span> <span class="op">=== -</span><span class="num">1</span>) <span class="kw">return</span> <span class="op">[</span><span class="num">404</span>, <span class="op">{</span> message<span class="op">:</span> <span class="str">'Not found'</span> <span class="op">}</span><span class="op">]</span>;
+    <span class="var">tutorials</span>.<span class="fn">splice</span>(<span class="var">index</span>, <span class="num">1</span>);
+    <span class="kw">return</span> <span class="op">[</span><span class="num">200</span>, <span class="op">{</span> message<span class="op">:</span> <span class="str">'Deleted successfully'</span> <span class="op">}</span><span class="op">]</span>;
+<span class="op">}</span>);
+
+<span class="kw">export default</span> <span class="var">mock</span>;</pre>
+        </div>
+
+        <ul class="step-list" style="counter-reset: steps 2;">
+            <li>
+                <div>
+                    <strong>Import mockApi in <code>src/main.jsx</code></strong>
+                    <p>Import it once at the app entry point - before anything else renders. This ensures every Axios call is intercepted.</p>
+                </div>
+            </li>
+        </ul>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">src/main.jsx</span>
+            </div>
+            <pre><span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> ReactDOM <span class="kw">from</span> <span class="str">'react-dom/client'</span>;
+<span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App'</span>;
+<span class="kw">import</span> <span class="str">'./mockApi'</span>; <span class="cmt">// &lt;-- must be imported here so it registers before any request</span>
+
+ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
+    <span class="op">&lt;</span>App <span class="op">/&gt;</span>
+);</pre>
+        </div>
+    </section>
+
+    <!-- ══════════════ 5. ROUTE METHODS ══════════════ -->
+    <section>
+        <div class="section-label">Section 5</div>
+        <h2>The Five Route Methods</h2>
+        <p>MockAdapter mirrors the standard HTTP methods used in a REST API:</p>
+
+        <div class="method-grid">
+            <div class="method-card">
+                <span class="badge badge-get">GET</span>
+                <div><strong>onGet(url)</strong><p>Fetch a list or a single item</p></div>
+            </div>
+            <div class="method-card">
+                <span class="badge badge-post">POST</span>
+                <div><strong>onPost(url)</strong><p>Create a new item</p></div>
+            </div>
+            <div class="method-card">
+                <span class="badge badge-put">PUT</span>
+                <div><strong>onPut(url)</strong><p>Replace / update an item</p></div>
+            </div>
+            <div class="method-card">
+                <span class="badge badge-delete">DELETE</span>
+                <div><strong>onDelete(url)</strong><p>Remove an item</p></div>
+            </div>
+            <div class="method-card">
+                <span class="badge badge-put" style="background:rgba(249,115,22,.15);color:var(--orange);border-color:rgba(249,115,22,.3)">PATCH</span>
+                <div><strong>onPatch(url)</strong><p>Partial update of an item</p></div>
+            </div>
+        </div>
+
+        <p>Every method takes a URL (string or RegExp) and chains <code>.reply()</code>:</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">reply() syntax</span>
+            </div>
+            <pre><span class="cmt">// Static reply: [statusCode, responseBody]</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="str">'/ping'</span>).<span class="fn">reply</span>(<span class="num">200</span>, <span class="op">{</span> message<span class="op">:</span> <span class="str">'pong'</span> <span class="op">}</span>);
+
+<span class="cmt">// Dynamic reply: callback receives the request config object</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="str">'/items'</span>).<span class="fn">reply</span>((<span class="var">config</span>) <span class="op">=></span> <span class="op">{</span>
+    <span class="cmt">// config.url    - the full URL string</span>
+    <span class="cmt">// config.data   - request body (string, parse with JSON.parse)</span>
+    <span class="cmt">// config.params - query params object (if passed via { params: {...} })</span>
+    <span class="kw">return</span> <span class="op">[</span><span class="num">200</span>, <span class="op">[</span> <span class="op">{</span>id<span class="op">:</span><span class="num">1</span>, name<span class="op">:</span><span class="str">'foo'</span><span class="op">}</span> <span class="op">]</span><span class="op">]</span>;
+<span class="op">}</span>);</pre>
+        </div>
+    </section>
+
+    <!-- ══════════════ 6. URL MATCHING ══════════════ -->
+    <section>
+        <div class="section-label">Section 6</div>
+        <h2>URL Matching - String vs RegExp</h2>
+        <p>You can match routes with an exact string or a regular expression:</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">url matching examples</span>
+            </div>
+            <pre><span class="cmt">// Exact string - matches only POST /tutorial</span>
+<span class="var">mock</span>.<span class="fn">onPost</span>(<span class="str">'/tutorial'</span>).<span class="fn">reply</span>(<span class="num">201</span>, newItem);
+
+<span class="cmt">// RegExp - matches GET /tutorial/1, /tutorial/42, etc.</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="rx">/\/tutorial\/\d+/</span>).<span class="fn">reply</span>(handler);
+
+<span class="cmt">// RegExp with optional query string - matches:</span>
+<span class="cmt">//   GET /tutorial</span>
+<span class="cmt">//   GET /tutorial?search=react</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="rx">/\/tutorial(\?.*)?$/</span>).<span class="fn">reply</span>(handler);</pre>
+        </div>
+
+        <div class="callout callout-tip">
+            <div class="callout-icon">✅</div>
+            <div class="callout-body">
+                <h4>Tip: order matters - unless your regex anchors prevent overlap</h4>
+                <p>MockAdapter matches routes top-to-bottom. Normally you'd put more specific routes first, but if your patterns use anchors like <code>$</code>, order doesn't matter. For example, <code>/\/tutorial(\?.*)?$/</code> ends with <code>$</code> so it will never match <code>/tutorial/1</code> - meaning the <code>/tutorial/:id</code> handler can safely come after it without being shadowed.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ 7. READING REQUEST DATA ══════════════ -->
+    <section>
+        <div class="section-label">Section 7</div>
+        <h2>Reading Request Data in the Handler</h2>
+        <p>The <code>config</code> object passed to your callback contains everything about the incoming request:</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">reading config</span>
+            </div>
+            <pre><span class="cmt">// --- Reading a URL path parameter ---</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="rx">/\/tutorial\/\d+/</span>).<span class="fn">reply</span>((<span class="var">config</span>) <span class="op">=></span> <span class="op">{</span>
+    <span class="kw">const</span> <span class="var">id</span> <span class="op">=</span> <span class="fn">parseInt</span>(<span class="var">config</span>.url.<span class="fn">split</span>(<span class="str">'/'</span>).<span class="fn">pop</span>()); <span class="cmt">// "/tutorial/5" → 5</span>
+    <span class="op">...</span>
+<span class="op">}</span>);
+
+<span class="cmt">// --- Reading query params ---</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="rx">/\/tutorial/</span>).<span class="fn">reply</span>((<span class="var">config</span>) <span class="op">=></span> <span class="op">{</span>
+    <span class="kw">const</span> <span class="var">url</span>    <span class="op">=</span> <span class="kw">new</span> <span class="cls">URL</span>(<span class="var">config</span>.url, <span class="str">'http://localhost'</span>);
+    <span class="kw">const</span> <span class="var">search</span> <span class="op">=</span> <span class="var">url</span>.searchParams.<span class="fn">get</span>(<span class="str">'search'</span>) <span class="op">??</span> <span class="str">''</span>;
+    <span class="op">...</span>
+<span class="op">}</span>);
+
+<span class="cmt">// --- Reading the request body (POST/PUT) ---</span>
+<span class="var">mock</span>.<span class="fn">onPost</span>(<span class="str">'/tutorial'</span>).<span class="fn">reply</span>((<span class="var">config</span>) <span class="op">=></span> <span class="op">{</span>
+    <span class="kw">const</span> <span class="var">body</span> <span class="op">=</span> JSON.<span class="fn">parse</span>(<span class="var">config</span>.data); <span class="cmt">// config.data is a JSON string</span>
+    <span class="op">...</span>
+<span class="op">}</span>);</pre>
+        </div>
+    </section>
+
+    <!-- ══════════════ 8. IN-MEMORY DATA ══════════════ -->
+    <section>
+        <div class="section-label">Section 8</div>
+        <h2>Managing In-Memory Data</h2>
+        <p>
+            The mock "database" is just a plain JavaScript array declared at the top of <code>mockApi.js</code>.
+            Every handler reads from and writes to this array, giving you full CRUD without a real database.
+        </p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">in-memory CRUD pattern</span>
+            </div>
+            <pre><span class="kw">let</span> <span class="var">items</span> <span class="op">=</span> <span class="op">[</span>
+    <span class="op">{</span> id<span class="op">:</span> <span class="num">1</span>, name<span class="op">:</span> <span class="str">'Alpha'</span> <span class="op">}</span>,
+    <span class="op">{</span> id<span class="op">:</span> <span class="num">2</span>, name<span class="op">:</span> <span class="str">'Beta'</span>  <span class="op">}</span>,
+<span class="op">]</span>;
+<span class="kw">let</span> <span class="var">nextId</span> <span class="op">=</span> <span class="num">3</span>;
+
+<span class="cmt">// CREATE  →  push a new object, return 201</span>
+<span class="kw">const</span> <span class="var">newItem</span> <span class="op">=</span> <span class="op">{</span> id<span class="op">:</span> <span class="var">nextId</span><span class="op">++</span>, <span class="op">...</span><span class="var">body</span> <span class="op">}</span>;
+<span class="var">items</span>.<span class="fn">push</span>(<span class="var">newItem</span>);
+<span class="kw">return</span> <span class="op">[</span><span class="num">201</span>, <span class="var">newItem</span><span class="op">]</span>;
+
+<span class="cmt">// READ    →  find by id</span>
+<span class="kw">const</span> <span class="var">item</span> <span class="op">=</span> <span class="var">items</span>.<span class="fn">find</span>(<span class="var">i</span> <span class="op">=></span> <span class="var">i</span>.id <span class="op">===</span> <span class="var">id</span>);
+
+<span class="cmt">// UPDATE  →  find index, spread-merge, replace</span>
+<span class="kw">const</span> <span class="var">idx</span> <span class="op">=</span> <span class="var">items</span>.<span class="fn">findIndex</span>(<span class="var">i</span> <span class="op">=></span> <span class="var">i</span>.id <span class="op">===</span> <span class="var">id</span>);
+<span class="var">items</span><span class="op">[</span><span class="var">idx</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span> <span class="op">...</span><span class="var">items</span><span class="op">[</span><span class="var">idx</span><span class="op">]</span>, <span class="op">...</span><span class="var">body</span> <span class="op">}</span>;
+
+<span class="cmt">// DELETE  →  splice the array</span>
+<span class="var">items</span>.<span class="fn">splice</span>(<span class="var">idx</span>, <span class="num">1</span>);</pre>
+        </div>
+
+        <div class="callout callout-warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-body">
+                <h4>Data resets on page refresh</h4>
+                <p>Because the array lives in JS memory, all changes are lost when the page reloads. This is expected for development - when you switch to a real server, data persists in the database.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ 9. HOW COMPONENTS USE IT ══════════════ -->
+    <section>
+        <div class="section-label">Section 9</div>
+        <h2>How React Components Use the Mock</h2>
+        <p>
+            Components call <code>http</code> (your Axios instance) exactly as they would with a real server.
+            MockAdapter intercepts invisibly - <strong style="color:var(--text)">no component code changes are needed</strong> when you later switch to a real backend.
+        </p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">pages/Tutorials.jsx  (simplified)</span>
+            </div>
+            <pre><span class="kw">import</span> <span class="op">{</span> useEffect, useState <span class="op">}</span> <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> <span class="var">http</span> <span class="kw">from</span> <span class="str">'../http'</span>;
+
+<span class="kw">function</span> <span class="fn">Tutorials</span>() <span class="op">{</span>
+    <span class="kw">const</span> <span class="op">[</span><span class="var">tutorials</span>, <span class="var">setTutorials</span><span class="op">]</span> <span class="op">=</span> <span class="fn">useState</span>(<span class="op">[]</span>);
+
+    <span class="fn">useEffect</span>(() <span class="op">=></span> <span class="op">{</span>
+        <span class="cmt">// This looks exactly like a real API call.</span>
+        <span class="cmt">// MockAdapter intercepts it and returns our fake data.</span>
+        <span class="var">http</span>.<span class="fn">get</span>(<span class="str">'/tutorial'</span>).<span class="fn">then</span>(<span class="var">res</span> <span class="op">=></span> <span class="fn">setTutorials</span>(<span class="var">res</span>.data));
+    <span class="op">}</span>, <span class="op">[]</span>);
+
+    <span class="kw">return</span> (
+        <span class="op">&lt;</span>ul<span class="op">&gt;</span>
+            <span class="op">{</span><span class="var">tutorials</span>.<span class="fn">map</span>(<span class="var">t</span> <span class="op">=></span> <span class="op">&lt;</span>li key<span class="op">={</span><span class="var">t</span>.id<span class="op">}&gt;{</span><span class="var">t</span>.title<span class="op">}&lt;</span>/li<span class="op">&gt;</span>)<span class="op">}</span>
+        <span class="op">&lt;</span>/ul<span class="op">&gt;</span>
+    );
+<span class="op">}</span></pre>
+        </div>
+    </section>
+
+    <!-- ══════════════ 10. SIMULATE ERRORS ══════════════ -->
+    <section>
+        <div class="section-label">Section 10</div>
+        <h2>Simulating Errors</h2>
+        <p>One of the biggest advantages of a mock is being able to test error states without breaking the real server:</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">error simulation</span>
+            </div>
+            <pre><span class="cmt">// Return a 404 when item not found</span>
+<span class="kw">const</span> <span class="var">item</span> <span class="op">=</span> <span class="var">data</span>.<span class="fn">find</span>(<span class="var">t</span> <span class="op">=></span> <span class="var">t</span>.id <span class="op">===</span> <span class="var">id</span>);
+<span class="kw">if</span> (<span class="op">!</span><span class="var">item</span>) <span class="kw">return</span> <span class="op">[</span><span class="num">404</span>, <span class="op">{</span> message<span class="op">:</span> <span class="str">'Not found'</span> <span class="op">}</span><span class="op">]</span>;
+
+<span class="cmt">// Simulate a 500 server error</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="str">'/broken'</span>).<span class="fn">reply</span>(<span class="num">500</span>, <span class="op">{</span> message<span class="op">:</span> <span class="str">'Internal Server Error'</span> <span class="op">}</span>);
+
+<span class="cmt">// Simulate a network timeout (no response at all)</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="str">'/slow'</span>).<span class="fn">timeout</span>();
+
+<span class="cmt">// Simulate a network error (connection refused)</span>
+<span class="var">mock</span>.<span class="fn">onGet</span>(<span class="str">'/offline'</span>).<span class="fn">networkError</span>();</pre>
+        </div>
+    </section>
+
+    <!-- ══════════════ 11. SWITCHING TO REAL API ══════════════ -->
+    <section>
+        <div class="section-label">Section 11</div>
+        <h2>Switching to a Real API</h2>
+        <p>When your backend is ready, simply stop importing <code>mockApi.js</code>. All your component code stays unchanged.</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                <span class="filename">src/main.jsx</span>
+            </div>
+            <pre><span class="cmt">// Remove or comment out this one line to use the real server:</span>
+<span class="cmt">// import './mockApi';</span>
+
+<span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> ReactDOM <span class="kw">from</span> <span class="str">'react-dom/client'</span>;
+<span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App'</span>;
+
+ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(<span class="op">&lt;</span>App <span class="op">/&gt;</span>);</pre>
+        </div>
+
+        <div class="callout callout-tip">
+            <div class="callout-icon">✅</div>
+            <div class="callout-body">
+                <h4>Zero component changes needed</h4>
+                <p>Because components only import <code>http.js</code> and not <code>mockApi.js</code> directly, removing the mock import is the only change required to go live.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ 12. QUICK REF ══════════════ -->
+    <section>
+        <div class="section-label">Section 12</div>
+        <h2>Quick Reference</h2>
+
+        <div class="card">
+            <h3>MockAdapter constructor options</h3>
+            <div class="code-block" style="margin:10px 0 0">
+                <pre><span class="kw">new</span> <span class="cls">MockAdapter</span>(<span class="var">axiosInstance</span>, <span class="op">{</span>
+    delayResponse<span class="op">:</span> <span class="num">300</span>,  <span class="cmt">// artificial delay in ms (simulates real network)</span>
+    onNoMatch<span class="op">:</span> <span class="str">'throwException'</span> <span class="cmt">// throw if a URL has no handler (useful for debugging)</span>
+<span class="op">}</span>)</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>reply() return value</h3>
+            <p style="margin-bottom:12px">Always return a 2-element (or 3-element) array:</p>
+            <div class="code-block" style="margin:10px 0 0">
+                <pre><span class="kw">return</span> <span class="op">[</span> statusCode, responseBody <span class="op">]</span>;
+<span class="kw">return</span> <span class="op">[</span> statusCode, responseBody, headers <span class="op">]</span>; <span class="cmt">// optional headers object</span>
+
+<span class="cmt">// Examples:</span>
+<span class="kw">return</span> <span class="op">[</span><span class="num">200</span>, <span class="op">{</span> id<span class="op">:</span> <span class="num">1</span>, title<span class="op">:</span> <span class="str">'React'</span> <span class="op">}</span><span class="op">]</span>;
+<span class="kw">return</span> <span class="op">[</span><span class="num">201</span>, <span class="var">newItem</span><span class="op">]</span>;
+<span class="kw">return</span> <span class="op">[</span><span class="num">404</span>, <span class="op">{</span> message<span class="op">:</span> <span class="str">'Not found'</span> <span class="op">}</span><span class="op">]</span>;</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Common HTTP status codes</h3>
+            <table class="compare" style="margin:10px 0 0">
+                <thead><tr><th>Code</th><th>Meaning</th><th>Use for</th></tr></thead>
+                <tbody>
+                    <tr><td><code>200</code></td><td>OK</td><td>Successful GET, PUT, DELETE</td></tr>
+                    <tr><td><code>201</code></td><td>Created</td><td>Successful POST</td></tr>
+                    <tr><td><code>400</code></td><td>Bad Request</td><td>Invalid input data</td></tr>
+                    <tr><td><code>401</code></td><td>Unauthorized</td><td>Not logged in</td></tr>
+                    <tr><td><code>404</code></td><td>Not Found</td><td>Item doesn't exist</td></tr>
+                    <tr><td><code>500</code></td><td>Server Error</td><td>Unexpected failure</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+<div class="footer">
+    <p>Lab 4 - axios-mock-adapter &nbsp;|&nbsp; <a href="https://github.com/ctimmermann/axios-mock-adapter" target="_blank">Library docs on GitHub</a></p>
+</div>
+
+</body>
+</html>
