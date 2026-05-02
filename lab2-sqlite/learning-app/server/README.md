@@ -29,3 +29,4 @@ npm install sqlite3
 
 - Run `npm update` to fix vulnerabilities and update dependencies to their latest versions.
 - Update DB_FILE value if you want to change the SQLite database file name and location.
+- For testing the API endpoints, refer to [curl-commands.md](curl-commands.md).
