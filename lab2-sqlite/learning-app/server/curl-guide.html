@@ -209,7 +209,7 @@
 
   <header>
     <h1>Testing Your REST API with curl</h1>
-    <p class="subtitle">Windows CMD Student Guide &mdash; Tutorial API on <code>http://localhost:3001</code></p>
+    <p class="subtitle">Windows CMD Student Guide - Tutorial API on <code>http://localhost:3001</code></p>
   </header>
 
   <!-- ══════════════════════════════════════
@@ -230,7 +230,7 @@
         </li>
         <li>
           <span class="step-number">3</span>
-          <span><strong>Verify curl is available.</strong> Run the command below — you should see a version number, not an error.</span>
+          <span><strong>Verify curl is available.</strong> Run the command below - you should see a version number, not an error.</span>
         </li>
       </ul>
 
@@ -249,9 +249,9 @@
   <hr class="divider" />
 
   <!-- ══════════════════════════════════════
-       1 — CREATE
+       1 - CREATE
   ═══════════════════════════════════════ -->
-  <div class="section-title">1 &mdash; Create a Tutorial (POST)</div>
+  <div class="section-title">1 - Create a Tutorial (POST)</div>
 
   <div class="card">
     <div class="card-header">
@@ -273,7 +273,7 @@
 
       <div class="note">
         <span class="icon">&#9432;</span>
-        <span>In CMD, use <code>\"</code> to include double quotes inside a double-quoted string. Do <strong>not</strong> use single quotes — CMD does not support them for quoting.</span>
+        <span>In CMD, use <code>\"</code> to include double quotes inside a double-quoted string. Do <strong>not</strong> use single quotes - CMD does not support them for quoting.</span>
       </div>
 
       <div class="note warn">
@@ -289,9 +289,9 @@
   </div>
 
   <!-- ══════════════════════════════════════
-       2 — GET ALL
+       2 - GET ALL
   ═══════════════════════════════════════ -->
-  <div class="section-title">2 &mdash; Get All Tutorials (GET)</div>
+  <div class="section-title">2 - Get All Tutorials (GET)</div>
 
   <div class="card">
     <div class="card-header">
@@ -300,7 +300,7 @@
       <span class="endpoint">/tutorial</span>
     </div>
     <div class="card-body">
-      <p>A plain GET request — no flags needed beyond the URL. The server returns a JSON array of every tutorial in the database.</p>
+      <p>A plain GET request - no flags needed beyond the URL. The server returns a JSON array of every tutorial in the database.</p>
 
       <div class="label">Command</div>
       <div class="code-block">
@@ -329,9 +329,9 @@
   </div>
 
   <!-- ══════════════════════════════════════
-       3 — GET BY ID
+       3 - GET BY ID
   ═══════════════════════════════════════ -->
-  <div class="section-title">3 &mdash; Get a Tutorial by ID (GET)</div>
+  <div class="section-title">3 - Get a Tutorial by ID (GET)</div>
 
   <div class="card">
     <div class="card-header">
@@ -364,9 +364,9 @@
   </div>
 
   <!-- ══════════════════════════════════════
-       4 — UPDATE
+       4 -UPDATE
   ═══════════════════════════════════════ -->
-  <div class="section-title">4 &mdash; Update a Tutorial (PUT)</div>
+  <div class="section-title">4 -Update a Tutorial (PUT)</div>
 
   <div class="card">
     <div class="card-header">
@@ -375,7 +375,7 @@
       <span class="endpoint">/tutorial/:id</span>
     </div>
     <div class="card-body">
-      <p>Same structure as POST — include the ID in the URL path. Both <code>title</code> and <code>description</code> are optional; omit either one to leave it unchanged.</p>
+      <p>Same structure as POST -include the ID in the URL path. Both <code>title</code> and <code>description</code> are optional; omit either one to leave it unchanged.</p>
 
       <div class="label">Command</div>
       <div class="code-block">
@@ -395,9 +395,9 @@
   </div>
 
   <!-- ══════════════════════════════════════
-       5 — DELETE
+       5 -DELETE
   ═══════════════════════════════════════ -->
-  <div class="section-title">5 &mdash; Delete a Tutorial (DELETE)</div>
+  <div class="section-title">5 -Delete a Tutorial (DELETE)</div>
 
   <div class="card">
     <div class="card-header">
@@ -406,7 +406,7 @@
       <span class="endpoint">/tutorial/:id</span>
     </div>
     <div class="card-body">
-      <p>No body needed — just set the method to <code>DELETE</code> and include the ID in the URL.</p>
+      <p>No body needed -just set the method to <code>DELETE</code> and include the ID in the URL.</p>
 
       <div class="label">Command</div>
       <div class="code-block">
@@ -419,7 +419,7 @@
 
       <div class="note tip">
         <span class="icon">&#10003;</span>
-        <span>Run <code>curl http://localhost:3001/tutorial/1</code> again after deleting — you should get a <strong>404</strong>, confirming the record is gone.</span>
+        <span>Run <code>curl http://localhost:3001/tutorial/1</code> again after deleting -you should get a <strong>404</strong>, confirming the record is gone.</span>
       </div>
 
       <div class="status-list">
@@ -464,7 +464,7 @@
           </tr>
           <tr>
             <td style="padding:.5rem .75rem;font-family:monospace;">-v</td>
-            <td style="padding:.5rem .75rem;">Verbose — shows full request &amp; response headers</td>
+            <td style="padding:.5rem .75rem;">Verbose -shows full request &amp; response headers</td>
             <td style="padding:.5rem .75rem;font-family:monospace;">curl -v http://localhost:3001/tutorial</td>
           </tr>
         </tbody>
@@ -472,7 +472,7 @@
     </div>
   </div>
 
-  <footer>Tutorial API &mdash; curl Student Guide &mdash; Windows CMD</footer>
+  <footer>Tutorial API -curl Student Guide -Windows CMD</footer>
 </div>
 
 <script>
