@@ -292,7 +292,7 @@
 <!-- ══════════════ HERO ══════════════ -->
 <div class="hero">
     <h1>axios-mock-adapter</h1>
-    <p>Simulate a full REST API entirely in the browser - no server required. Build and test your frontend independently.</p>
+    <p>Add a mock API on top of your existing Axios instance - intercept requests and return fake data without touching any component code.</p>
 </div>
 
 <div class="container">
@@ -378,58 +378,27 @@
     <section>
         <div class="section-label">Section 3</div>
         <h2>Installation</h2>
-        <p>Install alongside Axios in your React project:</p>
+        <p>Axios is already installed. Add only the mock adapter package:</p>
 
         <div class="code-block">
             <div class="code-header">
                 <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
                 <span class="filename">terminal</span>
             </div>
-            <pre><span class="fn">npm</span> <span class="str">install</span> axios axios-mock-adapter</pre>
-        </div>
-
-        <div class="callout callout-warning">
-            <div class="callout-icon">⚠️</div>
-            <div class="callout-body">
-                <h4>Important: install order</h4>
-                <p>axios-mock-adapter wraps your existing Axios instance. You must create the Axios instance first, then pass it to MockAdapter.</p>
-            </div>
+            <pre><span class="fn">npm</span> <span class="str">install</span> axios-mock-adapter</pre>
         </div>
     </section>
 
     <!-- ══════════════ 4. SETUP ══════════════ -->
     <section>
         <div class="section-label">Section 4</div>
-        <h2>Project Setup (3 files)</h2>
+        <h2>Adding the Mock (2 steps)</h2>
 
         <ul class="step-list">
             <li>
                 <div>
-                    <strong>Create your Axios instance - <code>src/http.js</code></strong>
-                    <p>A single shared instance ensures all requests go through the same interceptors.</p>
-                </div>
-            </li>
-        </ul>
-
-        <div class="code-block">
-            <div class="code-header">
-                <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
-                <span class="filename">src/http.js</span>
-            </div>
-            <pre><span class="kw">import</span> axios <span class="kw">from</span> <span class="str">'axios'</span>;
-
-<span class="kw">const</span> <span class="var">http</span> <span class="op">=</span> axios.<span class="fn">create</span>(<span class="op">{</span>
-    baseURL<span class="op">:</span> <span class="str">'http://localhost:3001'</span>,
-<span class="op">}</span>);
-
-<span class="kw">export default</span> <span class="var">http</span>;</pre>
-        </div>
-
-        <ul class="step-list" style="counter-reset: steps 1;">
-            <li>
-                <div>
-                    <strong>Create the mock - <code>src/mock-api/tutorialApi.js</code></strong>
-                    <p>Pass your Axios instance to MockAdapter, then define handlers for each route.</p>
+                    <strong>Create the mock file - <code>src/mock-api/tutorialApi.js</code></strong>
+                    <p>Import your existing Axios instance and pass it to MockAdapter, then define handlers for each route.</p>
                 </div>
             </li>
         </ul>
@@ -501,10 +470,10 @@
 <span class="kw">export default</span> <span class="var">mock</span>;</pre>
         </div>
 
-        <ul class="step-list" style="counter-reset: steps 2;">
+        <ul class="step-list" style="counter-reset: steps 1;">
             <li>
                 <div>
-                    <strong>Import tutorialApi in <code>src/main.jsx</code></strong>
+                    <strong>Import the mock file in <code>src/main.jsx</code></strong>
                     <p>Import it once at the app entry point - before anything else renders. This ensures every Axios call is intercepted.</p>
                 </div>
             </li>
