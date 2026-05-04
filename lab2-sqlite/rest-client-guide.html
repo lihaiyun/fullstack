@@ -291,7 +291,11 @@
         </li>
         <li>
           <span class="step-number">3</span>
-          <span><strong>Open the <code>.http</code> file.</strong> In the VS Code Explorer, navigate to <code>server/test/tutorial.http</code> and open it. You will see <span class="hl-blue">Send Request</span> links appear above each request.</span>
+          <span><strong>Create the test file.</strong> In the VS Code Explorer, right-click the <code>server/</code> folder and choose <em>New Folder</em> - name it <code>test</code>. Then right-click that folder and choose <em>New File</em> - name it <code>tutorial.http</code>. Open the file.</span>
+        </li>
+        <li>
+          <span class="step-number">4</span>
+          <span><strong>Add the requests from this guide.</strong> Follow each section below - copy the code block and paste it into <code>tutorial.http</code>. As you add request blocks, <span class="hl-blue">Send Request</span> links will appear above each one automatically.</span>
         </li>
       </ul>
 
@@ -309,7 +313,7 @@
 
   <div class="card">
     <div class="card-body">
-      <p>Each block in the <code>.http</code> file is one request. You can run any request individually - you do not have to run them in order.</p>
+      <p>Each block you add to <code>tutorial.http</code> is one request. Once the code is in the file, you can run any request individually - you do not have to run them in order.</p>
 
       <ul class="setup-steps">
         <li>
@@ -328,7 +332,7 @@
 
       <div class="note">
         <span class="icon">&#9432;</span>
-        <span>Requests are separated by <code>###</code> lines. Everything between two <code>###</code> markers is treated as a single request. Do not remove these separators.</span>
+        <span>Each request block starts with a <code>###</code> line - include it every time you paste a new block into the file. Everything between two <code>###</code> markers is treated as a single request.</span>
       </div>
     </div>
   </div>
@@ -342,7 +346,7 @@
     <div class="card-body">
       <p>Variables defined with <code>@name = value</code> at the top of the file are reused throughout. This means you only need to change one place to update the server URL or the ID you are testing.</p>
 
-      <div class="label">Variables declared in tutorial.http</div>
+      <div class="label">Add these lines at the very top of tutorial.http</div>
       <div class="code-block">
         <pre>@baseUrl = http://localhost:3001
 @tutorialId = 1</pre>
@@ -388,9 +392,9 @@
       <span class="endpoint">/tutorial</span>
     </div>
     <div class="card-body">
-      <p>The request line specifies the method and URL. The <code>Content-Type</code> header tells the server the body is JSON. A blank line separates the headers from the body.</p>
+      <p>Add the block below to your file. The first line specifies the method and URL. The <code>Content-Type</code> header tells the server the body is JSON. A blank line separates the headers from the body.</p>
 
-      <div class="label">Request in tutorial.http</div>
+      <div class="label">Add this to tutorial.http</div>
       <div class="code-block">
         <pre>### Create tutorial
 POST {{baseUrl}}/tutorial
@@ -439,7 +443,7 @@ Content-Type: application/json
     <div class="card-body">
       <p>This example intentionally triggers a validation error so you can see what the error response looks like.</p>
 
-      <div class="label">Request in tutorial.http</div>
+      <div class="label">Add this to tutorial.http</div>
       <div class="code-block">
         <pre>### Create tutorial - validation error (title too short)
 POST {{baseUrl}}/tutorial
@@ -479,7 +483,7 @@ Content-Type: application/json
     <div class="card-body">
       <p>A plain GET request with no body. The server returns a JSON array of every tutorial, ordered newest first.</p>
 
-      <div class="label">Request in tutorial.http</div>
+      <div class="label">Add this to tutorial.http</div>
       <div class="code-block">
         <pre>### Get all tutorials
 GET {{baseUrl}}/tutorial</pre>
@@ -512,7 +516,7 @@ GET {{baseUrl}}/tutorial</pre>
     <div class="card-body">
       <p>Add a <code>search</code> query parameter to filter results. The server searches both <code>title</code> and <code>description</code> fields.</p>
 
-      <div class="label">Request in tutorial.http</div>
+      <div class="label">Add this to tutorial.http</div>
       <div class="code-block">
         <pre>### Get all tutorials with search
 GET {{baseUrl}}/tutorial?search=sqlite</pre>
@@ -553,7 +557,7 @@ GET {{baseUrl}}/tutorial?search=sqlite</pre>
     <div class="card-body">
       <p>The <code>&#123;&#123;tutorialId&#125;&#125;</code> variable is substituted with the value you set at the top of the file.</p>
 
-      <div class="label">Request in tutorial.http</div>
+      <div class="label">Add this to tutorial.http</div>
       <div class="code-block">
         <pre>### Get tutorial by id
 GET {{baseUrl}}/tutorial/{{tutorialId}}</pre>
@@ -651,7 +655,7 @@ Content-Type: application/json
     <div class="card-body">
       <p>No body needed. The server returns <code>200 OK</code> when the record is successfully deleted.</p>
 
-      <div class="label">Request in tutorial.http</div>
+      <div class="label">Add this to tutorial.http</div>
       <div class="code-block">
         <pre>### Delete tutorial
 DELETE {{baseUrl}}/tutorial/{{tutorialId}}</pre>
