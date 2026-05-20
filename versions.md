@@ -2,7 +2,8 @@
 
 ## node.js
 https://nodejs.org/en/blog/release/
-- v24.15.0 (LTS) released on 2026-04-15
+- v22.22.3 (LTS) published on 2026-05-13
+- v24.15.0 (LTS) published on 2026-04-15
 
 ## npm
 https://github.com/npm/cli
@@ -11,7 +12,7 @@ https://github.com/npm/cli
 ## express
 https://www.npmjs.com/package/express?activeTab=versions
 - v4.22.2 published on 2026-05-11
-- v5.2.1 released on 2025-12-02
+- v5.2.1 published on 2025-12-02
 
 ## vite
 https://www.npmjs.com/package/vite?activeTab=versions
