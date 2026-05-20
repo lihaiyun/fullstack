@@ -23,6 +23,12 @@ cd ..\client
 npm update
 cd ..\..\..
 
+cd lab4-mockapi\learning-app\server
+npm update
+cd ..\client
+npm update
+cd ..\..\..
+
 cd lab5\learning-app\server
 npm update
 cd ..\..\..
