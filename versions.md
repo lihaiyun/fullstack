@@ -19,7 +19,7 @@ https://www.npmjs.com/package/vite?activeTab=versions
 - v8.0.13 published on 2026-05-14
 
 ## react
-https://www.npmjs.com/package//react?activeTab=versions
+https://www.npmjs.com/package/react?activeTab=versions
 - v19.2.6 published on 2026-05-06
 
 ## react-router
