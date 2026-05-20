@@ -13,13 +13,3 @@ npm i react-toastify
 npm audit --production
 npm update
 ```
-
-# Test on 20/2/2026
-```bash
-npm audit
-```
-- 7 vulnerabilities (3 moderate, 4 high)
-```bash
-npm audit --production
-```
-- found 0 vulnerabilities
