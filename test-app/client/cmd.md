@@ -1,5 +1,5 @@
 ```bash
-npm create vite .
+npm create vite@latest . 
 npm i
 npm i @mui/material @emotion/react @emotion/styled
 npm i react-router
@@ -12,4 +12,18 @@ npm i react-toastify
 
 npm audit --production
 npm update
+```
+
+```bash
+npm rm @mui/x-date-pickers
+npm rm @mui/icons-material
+npm rm @mui/material @emotion/react @emotion/styled
+
+npm i @mui/material @emotion/react @emotion/styled
+npm i @mui/icons-material
+npm i @mui/x-date-pickers
+```
+
+```bash
+npm i react-router@latest
 ```
