@@ -14,3 +14,19 @@ npm i nanoid@3
 npm audit --production
 npm update
 ```
+
+```bash
+npm i express@latest
+npm i nodemon@latest --save-dev
+npm i cors@latest
+npm i dotenv@latest
+npm i sequelize@latest mysql2@latest
+npm i yup@latest
+npm i bcrypt@latest
+npm i jsonwebtoken@latest
+npm i multer@latest
+npm i nanoid@3
+
+npm audit --production
+npm update
+```
